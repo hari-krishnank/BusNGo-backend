@@ -1,12 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import * as nodemailer from 'nodemailer';
 import { OtpRepository } from '../repositories/otp.repository';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class OtpService {
     private transporter: nodemailer.Transporter;
 
-    constructor(private readonly otpRepository: OtpRepository) {
+    constructor(
+        private readonly otpRepository: OtpRepository,
+        private readonly configService: ConfigService
+    ) {
+        const emailUser = this.configService.get<string>('email.user');
+        const emailPass = this.configService.get<string>('email.pass');
 
         this.transporter = nodemailer.createTransport({
             service: 'gmail',
@@ -14,8 +20,8 @@ export class OtpService {
             port: 587,
             secure: true,
             auth: {
-                user: 'hkharikrishnan111@gmail.com',
-                pass: 'fcla dstr shiu uboi',
+                user: emailUser,
+                pass: emailPass,
             },
         });
 
@@ -27,7 +33,7 @@ export class OtpService {
 
     async sendOTP(email: string, otp: number): Promise<void> {
         const mailOptions = {
-            from: 'hkharikrishnan111@gmail.com',
+            from: this.configService.get<string>('email.user'),
             to: email,
             subject: 'Your OTP Code',
             text: `Your OTP code is ${otp}`,
