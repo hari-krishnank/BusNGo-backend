@@ -14,8 +14,8 @@ export class UsersController {
   }
 
   @Post('/verify-otp')
-  async verifyOtp(@Body() verifyOtpDto: VerifyOtpDto): Promise<{ message: string }> {
-    await this.usersService.verifyOtp(verifyOtpDto);
-    return { message: 'OTP verified successfully' };
+  async verifyOtp(@Body() verifyOtpDto: VerifyOtpDto): Promise<{ success: boolean }> {
+    const isValid = await this.usersService.verifyOtp(verifyOtpDto);
+    return { success: isValid };
   }
 }

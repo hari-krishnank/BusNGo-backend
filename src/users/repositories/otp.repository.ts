@@ -9,7 +9,10 @@ export class OtpRepository {
     constructor(@InjectModel(Otp.name) private readonly otpModel: Model<IOtpDocument>) { }
 
     async create(otpData: Partial<Otp>): Promise<IOtpDocument> {
-        const otp = new this.otpModel(otpData);
+        const otp = new this.otpModel({
+            ...otpData,
+            createdAt: new Date(), 
+        });
         return otp.save();
     }
 

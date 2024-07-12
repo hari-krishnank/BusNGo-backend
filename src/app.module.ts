@@ -18,6 +18,7 @@ import config from './config/config';
     }),
     ConfigModule.forRoot({
       cache: true,
+      envFilePath:'.env',
       isGlobal: true,
       load: [config]
     }),

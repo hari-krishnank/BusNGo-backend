@@ -7,10 +7,12 @@ import { UsersService } from "./services/users.service";
 import { OtpService } from './services/otp.service';
 import { Otp, OtpSchema } from "./schemas/otp.schema";
 import { OtpRepository } from "./repositories/otp.repository";
+import { UnVerifiedUser, UnVerifiedUserSchema } from "./schemas/unverified-user.schema";
 
 @Module({
     imports: [
         MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
+        MongooseModule.forFeature([{ name:UnVerifiedUser.name, schema: UnVerifiedUserSchema }]),
         MongooseModule.forFeature([{ name: Otp.name, schema: OtpSchema}]),
     ],
     controllers: [UsersController],

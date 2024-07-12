@@ -58,7 +58,6 @@ export class OtpService {
         await this.otpRepository.create({ email, otp, expiresAt });
     }
 
-
     async verifyOtp(email: string, otp: number): Promise<boolean> {
         const otpRecord = await this.otpRepository.findByEmail(email);
         if (!otpRecord) return false;

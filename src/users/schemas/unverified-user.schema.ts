@@ -1,11 +1,10 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { IUser } from "../interfaces/user.interface";
 import * as bcrypt from 'bcrypt';
 import { Document } from 'mongoose';
+import { IUnverifiedUser } from "../interfaces/unverifieduser.interface";
 
 @Schema({ timestamps: true })
-export class User extends Document implements IUser {
-
+export class UnVerifiedUser extends Document implements IUnverifiedUser {
     @Prop()
     username: string;
 
@@ -22,12 +21,10 @@ export class User extends Document implements IUser {
     is_verified: boolean;
 }
 
-export const UserSchema = SchemaFactory.createForClass(User);
+export const UnVerifiedUserSchema = SchemaFactory.createForClass(UnVerifiedUser);
 
-const isHashed = (password: string): boolean => password.startsWith('$2b$');
-
-UserSchema.pre<User>('save', async function (next: Function) {
-    if (this.isModified('password') && !isHashed(this.password)) {
+UnVerifiedUserSchema.pre<UnVerifiedUser>('save', async function (next: Function) {
+    if (this.isModified('password')) {
         this.password = await bcrypt.hash(this.password, 10);
     }
     next();
