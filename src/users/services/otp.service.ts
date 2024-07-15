@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import * as nodemailer from 'nodemailer';
 import { OtpRepository } from '../repositories/otp.repository';
 import { ConfigService } from '@nestjs/config';
+import { Cron, CronExpression } from '@nestjs/schedule';
 
 @Injectable()
 export class OtpService {
@@ -66,5 +67,16 @@ export class OtpService {
             return true;
         }
         return false;
+    }
+
+
+    @Cron(CronExpression.EVERY_SECOND)
+    async cleanupExpiredOtps() {
+        try {
+            const result = await this.otpRepository.deleteExpired();
+            // console.log(`Cleaned up ${result.deletedCount} expired OTPs`);
+        } catch (error) {
+            console.error('Error cleaning up expired OTPs:', error);
+        }
     }
 }

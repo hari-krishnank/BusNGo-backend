@@ -7,6 +7,8 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import config from './config/config';
+import { AdminModule } from './admin/admin.module';
+import { OwnerModule } from './busOwner/owner.module';
 
 @Module({
   imports: [
@@ -24,7 +26,9 @@ import config from './config/config';
     }),
     ScheduleModule.forRoot(),
     UsersModule,
-    AuthModule
+    AuthModule,
+    AdminModule,
+    OwnerModule
   ],
   controllers: [AppController],
   providers: [AppService],

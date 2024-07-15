@@ -11,7 +11,7 @@ export class OtpRepository {
     async create(otpData: Partial<Otp>): Promise<IOtpDocument> {
         const otp = new this.otpModel({
             ...otpData,
-            createdAt: new Date(), 
+            createdAt: new Date(),
         });
         return otp.save();
     }
@@ -23,5 +23,10 @@ export class OtpRepository {
 
     async deleteByEmail(email: string): Promise<void> {
         await this.otpModel.deleteOne({ email }).exec();
+    }
+    
+    async deleteExpired(): Promise<{ deletedCount: number }> {
+        const result = await this.otpModel.deleteMany({ expiresAt: { $lt: new Date() } }).exec();
+        return { deletedCount: result.deletedCount };
     }
 }

@@ -8,5 +8,9 @@ export default () => ({
     },
     jwt: {
         secret: process.env.JWT_SECRET
+    },
+    admin: {
+        email: process.env.ADMIN_EMAIL,
+        pass: process.env.ADMIN_PASSWORD
     }
 })

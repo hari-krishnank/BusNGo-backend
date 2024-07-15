@@ -13,9 +13,8 @@ export class Otp extends Document implements IOtp {
     @Prop()
     expiresAt: Date;
 
-    @Prop({ default: Date.now(), expires: 60 }) 
+    @Prop({ default: Date.now() }) 
     createdAt: Date;
 }
 
 export const OtpSchema = SchemaFactory.createForClass(Otp)
-OtpSchema.index({ createdAt: 1 }, { expireAfterSeconds: 60 });
