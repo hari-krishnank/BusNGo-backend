@@ -40,4 +40,8 @@ export class AdminService {
         return this.ownersRepository.updateOwnerBlockStatus(id, isBlocked);
     }
 
+
+    async updateUserBlockStatus(id: string, isBlocked: boolean) {
+        return this.usersRepository.updateUserBlockStatus(id, isBlocked);
+    }
 }

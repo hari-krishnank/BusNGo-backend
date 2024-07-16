@@ -22,6 +22,7 @@ export class UsersService {
         const unverifiedUserData: IUser = {
             ...userData,
             is_verified: false,
+            is_blocked:false
         };
 
         await this.usersRepository.createUnverifiedUser(unverifiedUserData);
@@ -42,6 +43,7 @@ export class UsersService {
                 await this.usersRepository.create({
                     ...user,
                     is_verified: true,
+                    is_blocked:false
                 });
                 await this.usersRepository.deleteUnverifiedByEmail(email);
                 return true;

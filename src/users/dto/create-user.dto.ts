@@ -16,4 +16,7 @@ export class CreateUserDto implements IUser {
 
     @IsBoolean()
     is_verified: boolean;
+
+    @IsBoolean()
+    is_blocked: boolean;
 }

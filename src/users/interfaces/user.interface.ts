@@ -4,4 +4,5 @@ export interface IUser {
     phone: string;
     password: string;
     is_verified:boolean;
+    is_blocked:boolean;
 }

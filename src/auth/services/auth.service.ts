@@ -22,6 +22,11 @@ export class AuthService {
             return null;
         }
 
+        
+        if (user.is_blocked) {
+            throw new UnauthorizedException('Your account has been blocked. Please contact support.');
+        }
+
         const passwordMatch = await bcrypt.compare(password, user.password);
         if (!passwordMatch) {
             this.logger.warn(`Invalid password for email: ${email}`);
@@ -33,6 +38,8 @@ export class AuthService {
     }
 
     async login(user: any) {
+
+
         const payload = { email: user.email, sub: user._id };
         return {
             access_token: this.jwtService.sign(payload),
@@ -51,12 +58,6 @@ export class AuthService {
             this.logger.warn(`Blocked owner attempted login: ${email}`);
             return null;
         }
-
-        // const passwordMatch = await bcrypt.compare(password, owner.password);
-        // if (!passwordMatch) {
-        //     this.logger.warn(`Invalid password for email: ${email}`);
-        //     return null;
-        // }
 
         const { password: _, ...result } = owner;
         return result;

@@ -48,4 +48,8 @@ export class UsersRepository {
   async getVerifiedUsers(): Promise<IUserDocument[]> {
     return this.userModel.find({ is_verified: true }).exec();
   }
+
+  async updateUserBlockStatus(id: string, isBlocked: boolean) {
+    return this.userModel.findByIdAndUpdate(id, { is_blocked: isBlocked }, { new: true });
+  }
 }

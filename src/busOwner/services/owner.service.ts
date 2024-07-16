@@ -87,7 +87,4 @@ export class OwnerService {
 
         return true;
     }
-
-
 }
-

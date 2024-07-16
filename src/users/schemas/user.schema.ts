@@ -20,6 +20,9 @@ export class User extends Document implements IUser {
 
     @Prop({ default: false })
     is_verified: boolean;
+
+    @Prop({ default: false })
+    is_blocked: boolean;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

@@ -84,5 +84,4 @@ export class UnverifiedOwnerRepository {
     async updateOwnerBlockStatus(id: string, isBlocked: boolean): Promise<IVerifiedOwnerDocument> {
         return this.verifiedOwnerModel.findByIdAndUpdate(id, { is_blocked: isBlocked }, { new: true }).exec();
     }
-
 }

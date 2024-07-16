@@ -12,6 +12,9 @@ export class AuthController {
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
     }
+    if (user.is_blocked) {
+      throw new UnauthorizedException('Your account has been blocked. Please contact support.');
+    }
     return this.authService.login(user);
   }
 

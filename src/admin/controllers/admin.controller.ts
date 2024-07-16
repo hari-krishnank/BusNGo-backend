@@ -37,4 +37,10 @@ export class AdminController {
     async updateOwnerBlockStatus(@Param('id') id: string, @Body('isBlocked') isBlocked: boolean) {
         return this.adminService.updateOwnerBlockStatus(id, isBlocked);
     }
+
+    @UseGuards(JwtAuthGuard)
+    @Put('user/:id/block')
+    async updateUserBlockStatus(@Param('id') id: string, @Body('isBlocked') isBlocked: boolean) {
+        return this.adminService.updateUserBlockStatus(id, isBlocked);
+    }
 }
