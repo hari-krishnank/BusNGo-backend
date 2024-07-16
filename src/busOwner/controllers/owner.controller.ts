@@ -25,6 +25,13 @@ export class OwnerController {
         return isValid;
     }
 
+
+    @Post('resend-otp')
+    async resendOtp(@Body('email') email: string): Promise<{ message: string }> {
+        await this.otpService.resendOTP(email);
+        return { message: 'OTP resent successfully' };
+    }
+
     @Put('update-details')
     async updateOwnerDetails(@Body() updateOwnerDetailsDto: UpdateOwnerDetailsDto): Promise<{ message: string }> {
         console.log('Payload received:', updateOwnerDetailsDto);

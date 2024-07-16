@@ -79,4 +79,15 @@ export class OtpService {
             console.error('Error cleaning up expired OTPs:', error);
         }
     }
+
+    async resendOTP(email: string): Promise<void> {
+        const existingOtp = await this.otpRepository.findByEmail(email);
+
+        if (existingOtp && existingOtp.expiresAt > new Date()) {
+            throw new Error('OTP is still valid. Please wait for it to expire before requesting a new one.');
+        }
+
+        const newOtp = await this.generateOTP();
+        await this.sendOTP(email, newOtp);
+    }
 }

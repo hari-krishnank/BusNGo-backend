@@ -29,4 +29,6 @@ export class OtpRepository {
         const result = await this.otpModel.deleteMany({ expiresAt: { $lt: new Date() } }).exec();
         return { deletedCount: result.deletedCount };
     }
+
+    
 }
