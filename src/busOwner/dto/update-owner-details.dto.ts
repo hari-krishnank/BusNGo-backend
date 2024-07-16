@@ -20,4 +20,32 @@ export class UpdateOwnerDetailsDto {
     @IsString()
     @MinLength(6)
     password?: string;
+
+    @IsOptional()
+    @IsString()
+    agencyName?: string;
+
+    @IsOptional()
+    @IsString()
+    designation?: string;
+
+    @IsOptional()
+    @IsString()
+    country?: string;
+
+    @IsOptional()
+    @IsString()
+    state?: string;
+
+    @IsOptional()
+    @IsString()
+    city?: string;
+
+    @IsOptional()
+    @IsString()
+    postalCode?: string;
+
+    @IsOptional()
+    @IsString()
+    registeredAddress?: string;
 }

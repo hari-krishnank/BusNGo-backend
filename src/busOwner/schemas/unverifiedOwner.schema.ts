@@ -21,6 +21,27 @@ export class unverifiedOwner extends Document implements IOwner {
 
     @Prop()
     password: string;
+
+    @Prop()
+    agencyName: string;
+
+    @Prop()
+    designation: string;
+
+    @Prop()
+    country: string;
+
+    @Prop()
+    state: string;
+
+    @Prop()
+    city: string;
+
+    @Prop()
+    postalCode: string;
+
+    @Prop()
+    registeredAddress: string;
 }
 
 export const UnverifiedOwnerSchema = SchemaFactory.createForClass(unverifiedOwner);

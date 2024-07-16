@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { CreateOwnerDto } from "../dto/create-owner.dto";
 import { UnverifiedOwnerRepository } from "../repositories/unverified-owner.repository";
 import { IOwner } from "../interfaces/owner.interface";
@@ -58,4 +58,36 @@ export class OwnerService {
 
         await this.ownerRepository.updateUnverifiedOwner(updateOwnerDetailsDto);
     }
+
+    async getOwnerDetails(email: string): Promise<IOwner> {
+        const owner = await this.ownerRepository.findByEmail(email)
+        console.log(owner);
+        if (!owner) {
+            throw new NotFoundException('Owner not found');
+        }
+        return owner;
+    }
+
+    async confirmOwnerDetails(email: string): Promise<boolean> {
+        const unverifiedOwner = await this.ownerRepository.findUnverifiedByEmail(email);
+        if (!unverifiedOwner) {
+            throw new BadRequestException('Unverified owner not found');
+        }
+
+        const ownerData = unverifiedOwner.toObject();
+        delete ownerData._id;
+
+        const verifiedOwnerData: IOwner = {
+            ...ownerData,
+            is_verified: true,
+        };
+
+        await this.ownerRepository.createVerifiedOwner(verifiedOwnerData);
+        await this.ownerRepository.deleteUnverifiedByEmail(email);
+
+        return true;
+    }
+
+
 }
+
