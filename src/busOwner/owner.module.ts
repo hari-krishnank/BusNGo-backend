@@ -22,6 +22,6 @@ import { verifiedOwner, verifiedOwnerSchema } from './schemas/verifiedOwner.sche
     UnverifiedOwnerRepository,
     OwnerService
   ],
-  exports: [OwnerService]
+  exports: [OwnerService, UnverifiedOwnerRepository]
 })
 export class OwnerModule { }

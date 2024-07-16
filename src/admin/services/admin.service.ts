@@ -1,12 +1,16 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { UnverifiedOwnerRepository } from 'src/busOwner/repositories/unverified-owner.repository';
+import { UsersRepository } from 'src/users/repositories/users.repository';
 
 @Injectable()
 export class AdminService {
     constructor(
         private readonly jwtService: JwtService,
-        private readonly configService: ConfigService
+        private readonly configService: ConfigService,
+        private readonly usersRepository: UsersRepository,
+        private readonly ownersRepository: UnverifiedOwnerRepository,
     ) { }
 
     async login(email: string, password: string) {
@@ -22,4 +26,18 @@ export class AdminService {
             throw new UnauthorizedException('Invalid credentials');
         }
     }
+
+
+    async getVerifiedUsers() {
+        return this.usersRepository.getVerifiedUsers();
+    }
+
+    async getVerifiedOwners() {
+        return this.ownersRepository.getVerifiedOwners();
+    }
+
+    async updateOwnerBlockStatus(id: string, isBlocked: boolean) {
+        return this.ownersRepository.updateOwnerBlockStatus(id, isBlocked);
+    }
+
 }

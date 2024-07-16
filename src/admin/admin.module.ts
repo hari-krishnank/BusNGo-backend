@@ -6,10 +6,12 @@ import { JwtModule } from '@nestjs/jwt';
 import { UsersModule } from 'src/users/users.module';
 import { JwtStrategy } from 'src/auth/jwt.strategy';
 import { JwtAuthGuard } from 'src/guards/jwtAuthGuard/jwtguard';
+import { OwnerModule } from 'src/busOwner/owner.module';
 
 @Module({
   imports: [
     UsersModule,
+    OwnerModule,
     ConfigModule.forRoot(),
     JwtModule.registerAsync({
       imports: [ConfigModule],

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { UsersModule } from 'src/users/users.module';
 import { AuthController } from './controllers/auth.controller';
@@ -21,7 +21,7 @@ import { OwnerModule } from 'src/busOwner/owner.module';
             inject: [ConfigService]
         }),
     ],
-    providers:[AuthService, JwtStrategy],
+    providers:[AuthService, JwtStrategy, Logger],
     controllers:[AuthController]
 })
 export class AuthModule { }

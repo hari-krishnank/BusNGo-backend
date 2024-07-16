@@ -44,4 +44,8 @@ export class UsersRepository {
       throw new Error(`Error deleting unverified user by email: ${error.message}`);
     }
   }
+
+  async getVerifiedUsers(): Promise<IUserDocument[]> {
+    return this.userModel.find({ is_verified: true }).exec();
+  }
 }

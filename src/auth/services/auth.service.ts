@@ -47,6 +47,11 @@ export class AuthService {
             return null;
         }
 
+        if (owner.is_blocked) {
+            this.logger.warn(`Blocked owner attempted login: ${email}`);
+            return null;
+        }
+
         // const passwordMatch = await bcrypt.compare(password, owner.password);
         // if (!passwordMatch) {
         //     this.logger.warn(`Invalid password for email: ${email}`);
@@ -60,7 +65,7 @@ export class AuthService {
     async loginOwner(email: string, password: string) {
         const owner = await this.validateOwner(email, password);
         if (!owner) {
-            throw new UnauthorizedException('Invalid credentials');
+            throw new UnauthorizedException('Invalid credentials or account is blocked');
         }
         const payload = { email: owner.email, sub: owner.email };
         return {

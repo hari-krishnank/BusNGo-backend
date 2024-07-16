@@ -9,7 +9,9 @@ export class verifiedOwner extends Document implements IOwner {
 
     @Prop({ default: false })
     is_verified: boolean;
-
+   
+    @Prop({ default: false })
+    is_blocked: boolean;
 
     @Prop()
     firstName: string;

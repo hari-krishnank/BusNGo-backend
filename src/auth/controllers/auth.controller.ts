@@ -1,10 +1,10 @@
-import { Body, Controller, Post, UnauthorizedException } from '@nestjs/common';
+import { Body, Controller, InternalServerErrorException, Logger, Post, UnauthorizedException } from '@nestjs/common';
 import { AuthService } from '../services/auth.service';
 import { LoginDto } from 'src/busOwner/dto/login.dto';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService, private logger:Logger) { }
 
   @Post('login')
   async login(@Body() loginDto: { email: string; password: string }) {
@@ -21,7 +21,11 @@ export class AuthController {
     try {
       return await this.authService.loginOwner(loginDto.email, loginDto.password);
     } catch (error) {
-      throw new UnauthorizedException('Invalid credentials');
+      if (error instanceof UnauthorizedException) {
+        throw error;
+      }
+      this.logger.error(`Login failed for ${loginDto.email}:`, error);
+      throw new InternalServerErrorException('An error occurred during login');
     }
   }
 }

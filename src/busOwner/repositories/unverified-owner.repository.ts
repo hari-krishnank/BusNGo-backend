@@ -53,7 +53,7 @@ export class UnverifiedOwnerRepository {
 
         return owner;
     }
-    
+
     async updateUnverifiedOwner(updateOwnerDetailsDto: UpdateOwnerDetailsDto): Promise<IOwnerDocument | null> {
         const updateData: Partial<IOwner> = {};
         if (updateOwnerDetailsDto.firstName) updateData.firstName = updateOwnerDetailsDto.firstName;
@@ -67,12 +67,22 @@ export class UnverifiedOwnerRepository {
         if (updateOwnerDetailsDto.city) updateData.city = updateOwnerDetailsDto.city;
         if (updateOwnerDetailsDto.postalCode) updateData.postalCode = updateOwnerDetailsDto.postalCode;
         if (updateOwnerDetailsDto.registeredAddress) updateData.registeredAddress = updateOwnerDetailsDto.registeredAddress;
+        console.log(updateData);
+
 
         return this.unverifiedOwnerModel.findOneAndUpdate(
             { email: updateOwnerDetailsDto.email },
             updateData,
             { new: true }
         ).exec();
+    }
+
+    async getVerifiedOwners(): Promise<IVerifiedOwnerDocument[]> {
+        return this.verifiedOwnerModel.find({ is_verified: true }).exec();
+    }
+
+    async updateOwnerBlockStatus(id: string, isBlocked: boolean): Promise<IVerifiedOwnerDocument> {
+        return this.verifiedOwnerModel.findByIdAndUpdate(id, { is_blocked: isBlocked }, { new: true }).exec();
     }
 
 }

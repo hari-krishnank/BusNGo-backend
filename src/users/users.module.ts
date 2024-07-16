@@ -22,6 +22,6 @@ import { UnVerifiedUser, UnVerifiedUserSchema } from "./schemas/unverified-user.
         OtpService,
         OtpRepository
     ],
-    exports: [UsersService]
+    exports: [UsersService,UsersRepository]
 })
 export class UsersModule {}
