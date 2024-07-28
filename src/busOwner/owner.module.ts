@@ -8,19 +8,26 @@ import { UnverifiedOwnerRepository } from './repositories/unverified-owner.repos
 import { unverifiedOwner, UnverifiedOwnerSchema } from './schemas/unverifiedOwner.schema';
 import { OwnerService } from './services/owner.service';
 import { verifiedOwner, verifiedOwnerSchema } from './schemas/verifiedOwner.schema';
+import { CounterController } from './controllers/counter.controller';
+import { Counter, counterSchema } from './schemas/counter.schema';
+import { CounterService } from './services/counter.service';
+import { CounterRepository } from './repositories/counters.repositories';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: unverifiedOwner.name, schema: UnverifiedOwnerSchema }]),
     MongooseModule.forFeature([{ name: verifiedOwner.name, schema: verifiedOwnerSchema }]),
     MongooseModule.forFeature([{ name: Otp.name, schema: OtpSchema }]),
+    MongooseModule.forFeature([{ name: Counter.name, schema: counterSchema }]),
   ],
-  controllers: [OwnerController],
+  controllers: [OwnerController, CounterController],
   providers: [
     OtpService,
     OtpRepository,
     UnverifiedOwnerRepository,
-    OwnerService
+    OwnerService,
+    CounterService,
+    CounterRepository
   ],
   exports: [OwnerService, UnverifiedOwnerRepository]
 })

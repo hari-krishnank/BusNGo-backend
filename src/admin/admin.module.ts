@@ -4,9 +4,9 @@ import { AdminService } from './services/admin.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { UsersModule } from 'src/users/users.module';
-import { JwtStrategy } from 'src/auth/jwt.strategy';
 import { JwtAuthGuard } from 'src/guards/jwtAuthGuard/jwtguard';
 import { OwnerModule } from 'src/busOwner/owner.module';
+import { JwtStrategy } from 'src/auth/strategies/jwt.strategy';
 
 @Module({
   imports: [

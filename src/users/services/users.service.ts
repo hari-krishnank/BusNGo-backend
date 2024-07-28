@@ -4,6 +4,7 @@ import { IUser } from "../interfaces/user.interface";
 import { OtpService } from "./otp.service";
 import { VerifyOtpDto } from "../dto/verifyOtp.dto";
 import { CreateUserDto } from "../dto/create-user.dto";
+import { IUserDocument } from "../interfaces/user-document.interface";
 
 @Injectable()
 export class UsersService {
@@ -22,7 +23,7 @@ export class UsersService {
         const unverifiedUserData: IUser = {
             ...userData,
             is_verified: false,
-            is_blocked:false
+            is_blocked: false
         };
 
         await this.usersRepository.createUnverifiedUser(unverifiedUserData);
@@ -43,7 +44,7 @@ export class UsersService {
                 await this.usersRepository.create({
                     ...user,
                     is_verified: true,
-                    is_blocked:false
+                    is_blocked: false
                 });
                 await this.usersRepository.deleteUnverifiedByEmail(email);
                 return true;
@@ -51,9 +52,8 @@ export class UsersService {
         }
         return false;
     }
-    
 
-    async findByEmail(email: string) {
-        return this.usersRepository.findByEmail(email)
+    async findByEmail(email: string): Promise<IUserDocument | null> {
+        return this.usersRepository.findByEmail(email);
     }
 }

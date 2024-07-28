@@ -11,7 +11,7 @@ export class AdminService {
         private readonly configService: ConfigService,
         private readonly usersRepository: UsersRepository,
         private readonly ownersRepository: UnverifiedOwnerRepository,
-    ) { }
+    ) { }  
 
     async login(email: string, password: string) {
         const adminEmail = this.configService.get<string>('admin.email');
@@ -26,7 +26,6 @@ export class AdminService {
             throw new UnauthorizedException('Invalid credentials');
         }
     }
-
 
     async getVerifiedUsers() {
         return this.usersRepository.getVerifiedUsers();

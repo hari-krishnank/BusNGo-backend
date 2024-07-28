@@ -4,7 +4,7 @@ import { UsersModule } from 'src/users/users.module';
 import { AuthController } from './controllers/auth.controller';
 import { AuthService } from './services/auth.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { JwtStrategy } from './jwt.strategy';
+import { JwtStrategy } from './strategies/jwt.strategy';
 import { OwnerModule } from 'src/busOwner/owner.module';
 
 @Module({
