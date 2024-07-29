@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
+import { Controller, Get, Post, Body, Delete, Param, Put } from '@nestjs/common';
 import { CounterService } from '../services/counter.service';
 import { CreateCounterDto } from '../dto/create-counter.dto';
 import { Counter } from '../schemas/counter.schema';
@@ -15,5 +15,18 @@ export class CounterController {
     @Get()
     async getAllCounters(): Promise<Counter[]> {
         return this.counterService.getAllCounters();
+    }
+
+    @Put(':id')
+    async updateCounter(
+        @Param('id') id: string,
+        @Body() updateCounterDto: Partial<CreateCounterDto>
+    ): Promise<Counter> {
+        return this.counterService.updateCounter(id, updateCounterDto);
+    }
+
+    @Delete(':id')
+    async deleteCounter(@Param('id') id: string): Promise<Counter> {
+        return this.counterService.deleteCounter(id);
     }
 }

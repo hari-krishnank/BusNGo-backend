@@ -12,6 +12,13 @@ import { CounterController } from './controllers/counter.controller';
 import { Counter, counterSchema } from './schemas/counter.schema';
 import { CounterService } from './services/counter.service';
 import { CounterRepository } from './repositories/counters.repositories';
+import { Amenity, AmenitySchema } from './schemas/amenity.schema';
+import { AmenityService } from './services/amenity.service';
+import { AmenityRepository } from './repositories/amenity.repository';
+import { AmenityController } from './controllers/amenity.controller';
+import { SeatLayout, SeatLayoutSchema } from './schemas/seat-layout.schema';
+import { SeatLayoutsService } from './services/seat-layouts.service';
+import { SeatLayoutsController } from './controllers/seat-layouts.controller';
 
 @Module({
   imports: [
@@ -19,15 +26,20 @@ import { CounterRepository } from './repositories/counters.repositories';
     MongooseModule.forFeature([{ name: verifiedOwner.name, schema: verifiedOwnerSchema }]),
     MongooseModule.forFeature([{ name: Otp.name, schema: OtpSchema }]),
     MongooseModule.forFeature([{ name: Counter.name, schema: counterSchema }]),
+    MongooseModule.forFeature([{ name: Amenity.name, schema: AmenitySchema }]),
+    MongooseModule.forFeature([{ name: SeatLayout.name, schema: SeatLayoutSchema }])
   ],
-  controllers: [OwnerController, CounterController],
+  controllers: [OwnerController, CounterController, AmenityController, SeatLayoutsController],
   providers: [
     OtpService,
     OtpRepository,
     UnverifiedOwnerRepository,
     OwnerService,
     CounterService,
-    CounterRepository
+    CounterRepository,
+    AmenityService,
+    AmenityRepository,
+    SeatLayoutsService
   ],
   exports: [OwnerService, UnverifiedOwnerRepository]
 })

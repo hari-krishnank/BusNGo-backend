@@ -18,4 +18,12 @@ export class CounterRepository {
     async findAll(): Promise<Counter[]> {
         return this.counterModel.find().exec();
     }
+
+     async update(id: string, updateCounterDto: Partial<CreateCounterDto>): Promise<Counter> {
+        return this.counterModel.findByIdAndUpdate(id, updateCounterDto, { new: true }).exec();
+    }
+
+    async delete(id: string): Promise<Counter> {
+        return this.counterModel.findByIdAndDelete(id).exec();
+    }
 }

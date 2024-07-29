@@ -13,4 +13,12 @@ export class CounterService {
     async getAllCounters(): Promise<Counter[]> {
         return this.counterRepository.findAll();
     }
+
+    async updateCounter(id: string, updateCounterDto: Partial<CreateCounterDto>): Promise<Counter> {
+        return this.counterRepository.update(id, updateCounterDto);
+    }
+
+    async deleteCounter(id: string): Promise<Counter> {
+        return this.counterRepository.delete(id);
+    }
 }
