@@ -3,6 +3,9 @@ import { Document } from 'mongoose';
 
 @Schema()
 export class SeatLayout extends Document {
+    @Prop({ required: true })
+    layoutName: string;
+
     @Prop({ required: true, enum: ['Left', 'Right'] })
     driverSeatPosition: string;
 

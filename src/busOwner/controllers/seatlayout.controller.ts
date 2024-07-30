@@ -9,6 +9,7 @@ export class SeatLayoutsController {
 
     @Post()
     create(@Body() createSeatLayoutDto: CreateSeatLayoutDto) {
+        console.log('Received in controller:', createSeatLayoutDto);
         return this.seatLayoutsService.create(createSeatLayoutDto);
     }
 

@@ -8,12 +8,7 @@ import { UpdateSeatLayoutDto } from '../dto/update-seat-layout.dto';
 @Injectable()
 export class SeatLayoutsService {
     constructor(@InjectModel('SeatLayout') private seatLayoutModel: Model<SeatLayout>) { }
-
-    // async create(createSeatLayoutDto: CreateSeatLayoutDto): Promise<SeatLayout> {
-    //     const createdSeatLayout = new this.seatLayoutModel(createSeatLayoutDto);
-    //     return createdSeatLayout.save();
-    // }
-
+    
     async create(createSeatLayoutDto: CreateSeatLayoutDto): Promise<SeatLayout> {
         console.log('Received DTO:', createSeatLayoutDto);
         const createdSeatLayout = new this.seatLayoutModel(createSeatLayoutDto);

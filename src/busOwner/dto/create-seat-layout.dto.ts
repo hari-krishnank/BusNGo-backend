@@ -6,6 +6,9 @@ enum DriverSeatPosition {
 }
 
 export class CreateSeatLayoutDto {
+    @IsString()
+    layoutName: string;
+
     @IsEnum(DriverSeatPosition)
     driverSeatPosition: DriverSeatPosition;
 

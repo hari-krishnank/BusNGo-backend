@@ -18,7 +18,11 @@ import { AmenityRepository } from './repositories/amenity.repository';
 import { AmenityController } from './controllers/amenity.controller';
 import { SeatLayout, SeatLayoutSchema } from './schemas/seat-layout.schema';
 import { SeatLayoutsService } from './services/seat-layouts.service';
-import { SeatLayoutsController } from './controllers/seat-layouts.controller';
+import { SeatLayoutsController } from './controllers/seatlayout.controller';
+import { FleetType, FleetTypeSchema } from './schemas/fleet-type.schema';
+import { FleetTypeController } from './controllers/fleet-type.controller';
+import { FleetTypeRepository } from './repositories/fleet-type.repository';
+import { FleetTypeService } from './services/fleet-type.service';
 
 @Module({
   imports: [
@@ -27,9 +31,10 @@ import { SeatLayoutsController } from './controllers/seat-layouts.controller';
     MongooseModule.forFeature([{ name: Otp.name, schema: OtpSchema }]),
     MongooseModule.forFeature([{ name: Counter.name, schema: counterSchema }]),
     MongooseModule.forFeature([{ name: Amenity.name, schema: AmenitySchema }]),
-    MongooseModule.forFeature([{ name: SeatLayout.name, schema: SeatLayoutSchema }])
+    MongooseModule.forFeature([{ name: SeatLayout.name, schema: SeatLayoutSchema }]),
+    MongooseModule.forFeature([{ name: FleetType.name, schema: FleetTypeSchema }]),
   ],
-  controllers: [OwnerController, CounterController, AmenityController, SeatLayoutsController],
+  controllers: [OwnerController, CounterController, AmenityController, SeatLayoutsController, FleetTypeController],
   providers: [
     OtpService,
     OtpRepository,
@@ -39,8 +44,10 @@ import { SeatLayoutsController } from './controllers/seat-layouts.controller';
     CounterRepository,
     AmenityService,
     AmenityRepository,
-    SeatLayoutsService
+    SeatLayoutsService,
+    FleetTypeService,
+    FleetTypeRepository
   ],
-  exports: [OwnerService, UnverifiedOwnerRepository]
-})
+  exports: [OwnerService, UnverifiedOwnerRepository, FleetTypeService]
+}) 
 export class OwnerModule { }
