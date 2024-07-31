@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CounterRepository } from '../repositories/counters.repositories';
 import { CreateCounterDto } from '../dto/create-counter.dto';
 import { Counter } from '../schemas/counter.schema';
+import { Types } from 'mongoose';
 @Injectable()
 export class CounterService {
     constructor(private readonly counterRepository: CounterRepository) { }
@@ -20,5 +21,9 @@ export class CounterService {
 
     async deleteCounter(id: string): Promise<Counter> {
         return this.counterRepository.delete(id);
+    }
+
+    async findById(id: string | Types.ObjectId): Promise<Counter | null> {
+        return this.counterRepository.findById(id);
     }
 }

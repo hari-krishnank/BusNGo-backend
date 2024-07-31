@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { FleetType, FleetTypeDocument } from '../schemas/fleet-type.schema';
 
 @Injectable()
@@ -16,5 +16,9 @@ export class FleetTypeRepository {
 
     async findAll(): Promise<FleetType[]> {
         return this.fleetTypeModel.find().exec();
+    }
+
+    async findById(id: string | Types.ObjectId): Promise<FleetType | null> {
+        return this.fleetTypeModel.findById(id).exec();
     }
 }

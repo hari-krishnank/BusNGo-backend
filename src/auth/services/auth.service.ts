@@ -21,7 +21,6 @@ export class AuthService {
             this.logger.warn(`User not found for email: ${email}`);
             return null;
         }
-
         
         if (user.is_blocked) {
             throw new UnauthorizedException('Your account has been blocked. Please contact support.');

@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Delete, Param, Put } from '@nestjs/common'
 import { CounterService } from '../services/counter.service';
 import { CreateCounterDto } from '../dto/create-counter.dto';
 import { Counter } from '../schemas/counter.schema';
+
 @Controller('counters')
 export class CounterController {
     constructor(private readonly counterService: CounterService) { }
