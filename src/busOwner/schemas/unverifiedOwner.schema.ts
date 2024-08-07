@@ -1,9 +1,10 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document } from "mongoose";
 import { IOwner } from "../interfaces/owner.interface";
+import { IOwnerDocument } from "../interfaces/verifiedOwner.document";
 
 @Schema({ timestamps: true })
-export class unverifiedOwner extends Document implements IOwner {
+export class unverifiedOwner extends Document implements IOwnerDocument {
     @Prop({ required: true })
     email: string;
 

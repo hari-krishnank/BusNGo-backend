@@ -6,4 +6,5 @@ export interface SeatLayout extends Document {
     rows: number;
     columns: number;
     upperDeck: boolean;
+    status: string;
 }

@@ -1,4 +1,5 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsIn, IsMongoId, IsNotEmpty, IsString } from 'class-validator';
+import { Types } from 'mongoose';
 
 export class CreateAmenityDto {
     @IsNotEmpty()
@@ -8,4 +9,13 @@ export class CreateAmenityDto {
     @IsNotEmpty()
     @IsString()
     icon: string;
+
+    @IsNotEmpty()
+    @IsString()
+    @IsIn(['Active', 'Inactive'])
+    status: string;
+
+    @IsNotEmpty()
+    ownerId: string;
+
 }

@@ -1,4 +1,4 @@
-import { IsString, IsNumber, IsEnum, IsBoolean, IsArray } from 'class-validator';
+import { IsString, IsNumber, IsEnum, IsBoolean, IsArray, IsNotEmpty, IsIn } from 'class-validator';
 
 enum DriverSeatPosition {
     Left = 'Left',
@@ -24,4 +24,9 @@ export class CreateSeatLayoutDto {
     @IsArray()
     @IsString({ each: true })
     selectedSeats: string[];
+
+    @IsNotEmpty()
+    @IsString()
+    @IsIn(['Active', 'Inactive'])
+    status: string;
 }

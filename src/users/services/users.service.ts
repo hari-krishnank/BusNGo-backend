@@ -41,11 +41,13 @@ export class UsersService {
             if (unverifiedUser) {
                 const user = unverifiedUser.toObject();
                 delete user._id;
-                await this.usersRepository.create({
+                const latest =  await this.usersRepository.create({
                     ...user,
                     is_verified: true,
                     is_blocked: false
                 });
+                console.log(latest);
+                
                 await this.usersRepository.deleteUnverifiedByEmail(email);
                 return true;
             }

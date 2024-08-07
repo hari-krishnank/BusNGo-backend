@@ -14,6 +14,9 @@ export class Counter extends Document {
 
     @Prop()
     mobileNumber: string
+
+    @Prop({ required: true, enum: ['Active', 'Inactive'], default: 'Active' })
+    status: string;
 }
 
 export const counterSchema = SchemaFactory.createForClass(Counter)

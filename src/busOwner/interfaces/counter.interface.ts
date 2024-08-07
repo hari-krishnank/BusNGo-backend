@@ -3,4 +3,5 @@ export interface ICounter {
     city?: string;
     location?: string;
     mobileNumber?: string;
+    status: string;
 }

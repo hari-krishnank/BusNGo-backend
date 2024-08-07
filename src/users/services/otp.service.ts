@@ -38,7 +38,19 @@ export class OtpService {
             to: email,
             subject: 'Your OTP Code',
             text: `Your OTP code is ${otp}`,
-            html: `<b>Your OTP code is ${otp}</b>`,
+            html: 
+            `<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f4f7f9; border-radius: 10px;">
+                <img src="" alt="" style="display: block; margin: 0 auto; max-width: 150px; margin-bottom: 20px;">
+                <h1 style="color: #333; text-align: center; margin-bottom: 30px;">Your OTP for BusNGo</h1>
+                <div style="background-color: #ffffff; padding: 30px; border-radius: 8px; text-align: center; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                    <p style="font-size: 18px; color: #555; margin-bottom: 20px;">Your One-Time Password (OTP) is:</p>
+                    <h2 style="font-size: 36px; color: #4a90e2; letter-spacing: 5px; margin-bottom: 20px;">${otp}</h2>
+                    <p style="font-size: 14px; color: #888;">This OTP will expire in 1 minutes.</p>
+                </div>
+                <p style="font-size: 14px; color: #666; text-align: center; margin-top: 30px;">
+                    If you didn't request this OTP, please ignore this email.
+                </p>
+            </div>`,
         };
 
         await this.transporter.sendMail(mailOptions);
@@ -74,7 +86,6 @@ export class OtpService {
     async cleanupExpiredOtps() {
         try {
             const result = await this.otpRepository.deleteExpired();
-            // console.log(`Cleaned up ${result.deletedCount} expired OTPs`);
         } catch (error) {
             console.error('Error cleaning up expired OTPs:', error);
         }

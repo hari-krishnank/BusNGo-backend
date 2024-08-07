@@ -20,6 +20,9 @@ export class SeatLayout extends Document {
 
     @Prop({ type: [String], default: [] })
     selectedSeats: string[];
+
+    @Prop({ required: true, enum: ['Active', 'Inactive'], default: 'Active' })
+    status: string;
 }
 
 export const SeatLayoutSchema = SchemaFactory.createForClass(SeatLayout);

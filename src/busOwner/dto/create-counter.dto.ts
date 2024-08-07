@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, IsOptional } from 'class-validator';
+import { IsNotEmpty, IsString, IsOptional, IsIn } from 'class-validator';
 
 export class CreateCounterDto {
     @IsNotEmpty()
@@ -16,4 +16,9 @@ export class CreateCounterDto {
     @IsOptional()
     @IsString()
     mobileNumber?: string;
+
+    @IsNotEmpty()
+    @IsString()
+    @IsIn(['Active', 'Inactive'])
+    status: string;
 }

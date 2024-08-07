@@ -6,6 +6,7 @@ import { AuthService } from './services/auth.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { OwnerModule } from 'src/busOwner/owner.module';
+import { OwnerJwtStrategy } from './strategies/ownerJwt.strategy';
 
 @Module({
     imports: [
@@ -21,7 +22,7 @@ import { OwnerModule } from 'src/busOwner/owner.module';
             inject: [ConfigService]
         }),
     ],
-    providers:[AuthService, JwtStrategy, Logger],
+    providers:[AuthService, JwtStrategy, Logger, OwnerJwtStrategy],
     controllers:[AuthController]
 })
 export class AuthModule { }

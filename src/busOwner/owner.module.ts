@@ -88,7 +88,7 @@ import { AssignedBusService } from './services/assigned-bus.service';
     TripRepository,
     TripService,
     AssignedBusService,
-    AssignedBusRepository,
+    AssignedBusRepository
   ],
   exports: [OwnerService, UnverifiedOwnerRepository, FleetTypeService, RouteService, ScheduleService, TicketPriceService, AssignedBusService]
 })

@@ -61,7 +61,7 @@ export class OwnerService {
 
     async getOwnerDetails(email: string): Promise<IOwner> {
         const owner = await this.ownerRepository.findByEmail(email)
-        console.log(owner);
+        console.log('Owner Details :',owner);
         if (!owner) {
             throw new NotFoundException('Owner not found');
         }
@@ -81,7 +81,7 @@ export class OwnerService {
             ...ownerData,
             is_verified: true,
         };
-
+        console.log(verifiedOwnerData);
         await this.ownerRepository.createVerifiedOwner(verifiedOwnerData);
         await this.ownerRepository.deleteUnverifiedByEmail(email);
 

@@ -9,5 +9,4 @@ export class CreateOwnerDto implements IOwner {
     @IsBoolean()
     is_verified: boolean;
 
-    
 }
