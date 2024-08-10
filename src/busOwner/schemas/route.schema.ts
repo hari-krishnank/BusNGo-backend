@@ -8,16 +8,16 @@ export class Route extends Document {
     name: string;
 
     @Prop({ type: Types.ObjectId, ref: 'Counter', required: true })
-    startingPoint: Counter;
+    startingPoint: Types.ObjectId;
 
     @Prop({ type: Types.ObjectId, ref: 'Counter', required: true })
-    endingPoint: Counter;
+    endingPoint: Types.ObjectId;
 
     @Prop({ default: false })
     hasMoreStoppage: boolean;
 
     @Prop({ type: [{ type: Types.ObjectId, ref: 'Counter' }], default: [] })
-    additionalStops: Counter[];
+    additionalStops: Types.ObjectId[];
 
     @Prop({ required: true })
     distance: string;
@@ -27,6 +27,9 @@ export class Route extends Document {
 
     @Prop({ required: true, enum: ['Active', 'Inactive'] })
     status: string;
+
+    @Prop({ type: Types.ObjectId, ref: 'verifiedOwner', required: true })
+    ownerId: Types.ObjectId;
 }
 
 export const RouteSchema = SchemaFactory.createForClass(Route);

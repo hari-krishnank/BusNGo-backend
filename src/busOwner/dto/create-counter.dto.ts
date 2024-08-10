@@ -1,4 +1,5 @@
-import { IsNotEmpty, IsString, IsOptional, IsIn } from 'class-validator';
+import { IsNotEmpty, IsString, IsOptional, IsIn, IsMongoId } from 'class-validator';
+import { Types } from 'mongoose';
 
 export class CreateCounterDto {
     @IsNotEmpty()
@@ -21,4 +22,8 @@ export class CreateCounterDto {
     @IsString()
     @IsIn(['Active', 'Inactive'])
     status: string;
+
+    @IsNotEmpty()
+    @IsMongoId()
+    ownerId: Types.ObjectId
 }

@@ -1,19 +1,23 @@
-import { Controller, Get, Post, Body, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, UseGuards, Request } from '@nestjs/common';
 import { RouteService } from '../services/route.service';
 import { CreateRouteDto } from '../dto/create-route.dto';
 import { Route } from '../schemas/route.schema';
+import { OwnerJwtAuthGuard } from 'src/guards/jwtAuthGuard/ownerJwt.guard';
 
 @Controller('routes')
+@UseGuards(OwnerJwtAuthGuard)
 export class RouteController {
     constructor(private readonly routeService: RouteService) { }
 
     @Post()
-    async create(@Body() createRouteDto: CreateRouteDto): Promise<Route> {
-        return this.routeService.create(createRouteDto);
+    async create(@Request() req, @Body() createRouteDto: CreateRouteDto): Promise<Route> {
+        const ownerId = req.user.ownerId
+        return this.routeService.create(createRouteDto, ownerId);
     }
 
     @Get()
-    async findAll(): Promise<Route[]> {
-        return this.routeService.findAll();
+    async findAll(@Request() req): Promise<Route[]> {
+        const ownerId = req.user.ownerId
+        return this.routeService.findAll(ownerId);
     }
 }

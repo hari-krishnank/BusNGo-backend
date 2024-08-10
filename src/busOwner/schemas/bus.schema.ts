@@ -8,7 +8,7 @@ export class Bus extends Document {
     name: string;
 
     @Prop({ type: Types.ObjectId, ref: 'FleetType', required: true })
-    FleetType: FleetType;
+    FleetType: Types.ObjectId;
 
     @Prop({ required: true })
     regNo: string;
@@ -24,6 +24,9 @@ export class Bus extends Document {
 
     @Prop({ default: 'Active' })
     status: string;
+
+    @Prop({ type: Types.ObjectId, ref: 'verifiedOwner', required: true })
+    ownerId: Types.ObjectId;
 }
 
 export const BusSchema = SchemaFactory.createForClass(Bus);

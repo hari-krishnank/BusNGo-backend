@@ -1,4 +1,5 @@
 import { IsNotEmpty, IsNumber, IsMongoId } from 'class-validator';
+import { Types } from 'mongoose';
 
 export class CreateTicketPriceDto {
   @IsNotEmpty()
@@ -12,4 +13,8 @@ export class CreateTicketPriceDto {
   @IsNotEmpty()
   @IsNumber()
   price: number;
+
+  @IsNotEmpty()
+  @IsMongoId()
+  ownerId: Types.ObjectId
 }

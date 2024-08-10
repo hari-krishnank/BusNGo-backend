@@ -1,33 +1,42 @@
-import { Controller, Get, Post, Put, Delete, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, Request, UseGuards } from '@nestjs/common';
 import { ScheduleService } from '../services/schedule.service';
 import { CreateScheduleDto, UpdateScheduleDto } from '../dto/schedule.dto';
+import { OwnerJwtAuthGuard } from 'src/guards/jwtAuthGuard/ownerJwt.guard';
 
 @Controller('schedules')
+@UseGuards(OwnerJwtAuthGuard)
 export class ScheduleController {
     constructor(private scheduleService: ScheduleService) { }
 
     @Post()
-    create(@Body() createScheduleDto: CreateScheduleDto) {
-        return this.scheduleService.create(createScheduleDto);
+    create(@Request() req, @Body() createScheduleDto: CreateScheduleDto) {
+        const ownerId = req.user.ownerId
+        console.log('owner id for the schedule', ownerId);
+        
+        return this.scheduleService.create(createScheduleDto, ownerId);
     }
 
     @Get()
-    findAll() {
-        return this.scheduleService.findAll();
+    findAll(@Request() req) {
+        const ownerId = req.user.ownerId
+        return this.scheduleService.findAll(ownerId);
     }
 
     @Get(':id')
-    findOne(@Param('id') id: string) {
-        return this.scheduleService.findOne(id);
+    findOne(@Request() req, @Param('id') id: string) {
+        const ownerId = req.user.ownerId
+        return this.scheduleService.findOne(id, ownerId);
     }
 
     @Put(':id')
-    update(@Param('id') id: string, @Body() updateScheduleDto: UpdateScheduleDto) {
-        return this.scheduleService.update(id, updateScheduleDto);
+    update(@Request() req, @Param('id') id: string, @Body() updateScheduleDto: UpdateScheduleDto) {
+        const ownerId = req.user.ownerId
+        return this.scheduleService.update(id, updateScheduleDto, ownerId);
     }
 
     @Delete(':id')
-    delete(@Param('id') id: string) {
-        return this.scheduleService.delete(id);
+    delete(@Request() req, @Param('id') id: string) {
+        const ownerId = req.user.ownerId
+        return this.scheduleService.delete(id, ownerId);
     }
 }

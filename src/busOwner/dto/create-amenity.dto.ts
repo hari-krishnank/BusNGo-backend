@@ -16,6 +16,6 @@ export class CreateAmenityDto {
     status: string;
 
     @IsNotEmpty()
-    ownerId: string;
-
+    @IsMongoId()
+    ownerId: Types.ObjectId; 
 }

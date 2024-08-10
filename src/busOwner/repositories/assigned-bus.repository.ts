@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { AssignedBus, AssignedBusDocument } from '../schemas/assigned-bus.schema';
 import { CreateAssignedBusDto } from '../dto/create-assigned-bus.dto';
 
@@ -10,24 +10,24 @@ export class AssignedBusRepository {
         @InjectModel(AssignedBus.name) private assignedBusModel: Model<AssignedBusDocument>
     ) { }
 
-    async create(createAssignedBusDto: CreateAssignedBusDto): Promise<AssignedBus> {
+    async create(createAssignedBusDto: CreateAssignedBusDto & { ownerId: Types.ObjectId }): Promise<AssignedBus> {
         const newAssignedBus = new this.assignedBusModel(createAssignedBusDto);
         return newAssignedBus.save();
     }
 
-    async findAll(): Promise<AssignedBus[]> {
-        return this.assignedBusModel.find().populate('trip').populate('bus').exec();
+    async findAll(ownerId: Types.ObjectId): Promise<AssignedBus[]> {
+        return this.assignedBusModel.find({ ownerId }).populate('trip').populate('bus').exec();
     }
 
-    async findById(id: string): Promise<AssignedBus> {
-        return this.assignedBusModel.findById(id).populate('trip').populate('bus').exec();
+    async findById(id: string, ownerId: Types.ObjectId): Promise<AssignedBus> {
+        return this.assignedBusModel.findById({ _id: id, ownerId }).populate('trip').populate('bus').exec();
     }
 
-    async update(id: string, updateAssignedBusDto: Partial<CreateAssignedBusDto>): Promise<AssignedBus> {
-        return this.assignedBusModel.findByIdAndUpdate(id, updateAssignedBusDto, { new: true }).exec();
+    async update(id: string, updateAssignedBusDto: Partial<CreateAssignedBusDto>, ownerId: Types.ObjectId): Promise<AssignedBus> {
+        return this.assignedBusModel.findByIdAndUpdate({ _id: id, ownerId }, updateAssignedBusDto, { new: true }).exec();
     }
 
-    async delete(id: string): Promise<AssignedBus> {
-        return this.assignedBusModel.findByIdAndDelete(id).exec();
+    async delete(id: string, ownerId: Types.ObjectId): Promise<AssignedBus> {
+        return this.assignedBusModel.findByIdAndDelete({ _id: id, ownerId }).exec();
     }
 }

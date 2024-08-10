@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Schema as MongooseSchema } from 'mongoose';
+import { Document, Schema as MongooseSchema, Types } from 'mongoose';
 import { FleetType } from './fleet-type.schema';
 import { Route } from './route.schema';
 import { Schedule } from './schedule.schema';
@@ -25,11 +25,14 @@ export class Trip extends Document {
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Counter', required: true })
   endTo: Counter;
 
-  @Prop({ required: true })
-  dayOff: string;
+  @Prop({ type: [String], required: true })
+  dayOff: string[];
 
   @Prop({ default: 'Active' })
   status: string;
+
+  @Prop({ type: Types.ObjectId, ref: 'verifiedOwner', required: true })
+  ownerId: Types.ObjectId;
 }
 
 export const TripSchema = SchemaFactory.createForClass(Trip);

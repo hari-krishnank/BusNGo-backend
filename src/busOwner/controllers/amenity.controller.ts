@@ -9,34 +9,6 @@ import { OwnerJwtAuthGuard } from 'src/guards/jwtAuthGuard/ownerJwt.guard';
 export class AmenityController {
     constructor(private readonly amenityService: AmenityService) { }
 
-    // @Post()
-    // create(@Body() createAmenityDto: CreateAmenityDto) {
-    //     return this.amenityService.create(createAmenityDto);
-    // }
-
-    // @Get()
-    // @UseGuards(OwnerJwtAuthGuard)
-    // findAll(@Request() req) {
-    //     const ownerId = req.user.ownerId;
-    //     console.log(ownerId);
-    //     return this.amenityService.findAll(ownerId);
-    // }
-
-    // @Get(':id')
-    // findOne(@Param('id') id: string) {
-    //     return this.amenityService.findOne(id);
-    // }
-
-    // @Patch(':id')
-    // update(@Param('id') id: string, @Body() updateAmenityDto: UpdateAmenityDto) {
-    //     return this.amenityService.update(id, updateAmenityDto);
-    // }
-
-    // @Delete(':id')
-    // remove(@Param('id') id: string) {
-    //     return this.amenityService.remove(id);
-    // }
-
     @Post()
     create(@Request() req, @Body() createAmenityDto: CreateAmenityDto) {
         const ownerId = req.user.ownerId;

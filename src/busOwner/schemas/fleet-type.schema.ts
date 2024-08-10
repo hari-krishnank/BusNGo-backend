@@ -11,16 +11,19 @@ export class FleetType {
     name: string;
 
     @Prop({ type: Types.ObjectId, ref: 'SeatLayout', required: true })
-    seatLayout: SeatLayout;
+    seatLayout: Types.ObjectId;
 
     @Prop({ type: [{ type: Types.ObjectId, ref: 'Amenity' }] })
-    facilities: Amenity[];
+    facilities: Types.ObjectId[];
 
     @Prop({ required: true, enum: ['Active', 'Inactive'] })
     status: string;
 
     @Prop({ required: true })
     acStatus: boolean;
+
+    @Prop({ type: Types.ObjectId, ref: 'verifiedOwner', required: true })
+    ownerId: Types.ObjectId
 }
 
 export const FleetTypeSchema = SchemaFactory.createForClass(FleetType);

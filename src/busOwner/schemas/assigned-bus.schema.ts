@@ -15,6 +15,9 @@ export class AssignedBus {
 
     @Prop({ default: 'Active' })
     status: string;
+
+    @Prop({ type: Types.ObjectId, ref: 'verifiedOwner', required: true })
+    ownerId: Types.ObjectId;
 }
 
 export const AssignedBusSchema = SchemaFactory.createForClass(AssignedBus);

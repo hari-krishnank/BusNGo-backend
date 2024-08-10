@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Schema as MongooseSchema } from 'mongoose';
+import { Document, Schema as MongooseSchema, Types } from 'mongoose';
 import { FleetType } from './fleet-type.schema';
 import { Route } from './route.schema';
 
@@ -16,6 +16,9 @@ export class TicketPrice extends Document {
 
   @Prop({ default: 'Active' })
   status: string;
+
+  @Prop({ type: Types.ObjectId, ref: 'verifiedOwner', required: true })
+  ownerId: Types.ObjectId;
 }
 
 export const TicketPriceSchema = SchemaFactory.createForClass(TicketPrice);

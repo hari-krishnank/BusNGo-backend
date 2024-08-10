@@ -9,13 +9,13 @@ export class FleetTypeRepository {
         @InjectModel(FleetType.name) private fleetTypeModel: Model<FleetTypeDocument>,
     ) { }
 
-    async create(fleetType: Partial<FleetType>): Promise<FleetType> {
+    async create(fleetType: Partial<FleetType> & { ownerId: Types.ObjectId }): Promise<FleetType> {
         const newFleetType = new this.fleetTypeModel(fleetType);
         return newFleetType.save();
     }
 
-    async findAll(): Promise<FleetType[]> {
-        return this.fleetTypeModel.find().exec();
+    async findAll(ownerId: Types.ObjectId): Promise<FleetType[]> {
+        return this.fleetTypeModel.find({ ownerId }).exec();
     }
 
     async findById(id: string | Types.ObjectId): Promise<FleetType | null> {

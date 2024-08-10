@@ -25,4 +25,9 @@ export class CreateBusDto {
     @IsNotEmpty()
     @IsString()
     ModelNo: string;
+
+    @IsNotEmpty()
+    @IsMongoId()
+    ownerId: Types.ObjectId;
+
 }

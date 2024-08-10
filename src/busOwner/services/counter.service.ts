@@ -7,23 +7,27 @@ import { Types } from 'mongoose';
 export class CounterService {
     constructor(private readonly counterRepository: CounterRepository) { }
 
-    async createCounter(createCounterDto: CreateCounterDto): Promise<Counter> {
-        return this.counterRepository.create(createCounterDto);
+    async createCounter(createCounterDto: CreateCounterDto, ownerId: string): Promise<Counter> {
+        const counterWithOwner = {
+            ...createCounterDto,
+            ownerId: new Types.ObjectId(ownerId)
+        }
+        return this.counterRepository.create(counterWithOwner)
     }
 
-    async getAllCounters(): Promise<Counter[]> {
-        return this.counterRepository.findAll();
+    async getAllCounters(ownerId: string): Promise<Counter[]> {
+        return this.counterRepository.findAll(new Types.ObjectId(ownerId));
     }
 
-    async updateCounter(id: string, updateCounterDto: Partial<CreateCounterDto>): Promise<Counter> {
-        return this.counterRepository.update(id, updateCounterDto);
+    async updateCounter(id: string, updateCounterDto: Partial<CreateCounterDto>, ownerId: string): Promise<Counter> {
+        return this.counterRepository.update(id, updateCounterDto, new Types.ObjectId(ownerId));
     }
 
-    async deleteCounter(id: string): Promise<Counter> {
-        return this.counterRepository.delete(id);
+    async deleteCounter(id: string, ownerId: string): Promise<Counter> {
+        return this.counterRepository.delete(id, new Types.ObjectId(ownerId));
     }
 
     async findById(id: string | Types.ObjectId): Promise<Counter | null> {
         return this.counterRepository.findById(id);
     }
-}
+}  

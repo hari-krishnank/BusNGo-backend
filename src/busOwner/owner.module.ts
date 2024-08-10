@@ -68,7 +68,7 @@ import { AssignedBusService } from './services/assigned-bus.service';
   providers: [
     OtpService,
     OtpRepository,
-    UnverifiedOwnerRepository,
+    UnverifiedOwnerRepository, 
     OwnerService,
     CounterService,
     CounterRepository,

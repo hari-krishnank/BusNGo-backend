@@ -1,4 +1,5 @@
-import { IsNotEmpty, IsString, IsMongoId } from 'class-validator';
+import { IsNotEmpty, IsString, IsMongoId, IsArray, ArrayMinSize } from 'class-validator';
+import { Types } from 'mongoose';
 
 export class CreateTripDto {
     @IsNotEmpty()
@@ -26,6 +27,12 @@ export class CreateTripDto {
     endTo: string;
 
     @IsNotEmpty()
-    @IsString()
-    dayOff: string;
+    @IsArray()
+    @ArrayMinSize(1)
+    @IsString({ each: true })
+    dayOff: string[];
+
+    @IsNotEmpty()
+    @IsMongoId()
+    ownerId: Types.ObjectId
 }

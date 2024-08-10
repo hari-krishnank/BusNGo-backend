@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Document, Types } from 'mongoose';
 
-@Schema() 
+@Schema()
 export class Schedule extends Document {
     @Prop({ required: true })
     startFrom: string;
@@ -20,6 +20,9 @@ export class Schedule extends Document {
 
     @Prop({ default: Date.now })
     updatedAt: Date;
+
+    @Prop({ type: Types.ObjectId, ref: 'verifiedOwner', required: true })
+    ownerId: Types.ObjectId;
 }
 
 export const ScheduleSchema = SchemaFactory.createForClass(Schedule);

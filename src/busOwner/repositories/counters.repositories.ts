@@ -10,21 +10,21 @@ export class CounterRepository {
         @InjectModel(Counter.name) private counterModel: Model<Counter>,
     ) { }
 
-    async create(createCounterDto: CreateCounterDto): Promise<Counter> {
+    async create(createCounterDto: CreateCounterDto & { ownerId: Types.ObjectId }): Promise<Counter> {
         const createdCounter = new this.counterModel(createCounterDto);
         return createdCounter.save();
     }
 
-    async findAll(): Promise<Counter[]> {
-        return this.counterModel.find().exec();
+    async findAll(ownerId: Types.ObjectId): Promise<Counter[]> {
+        return this.counterModel.find({ ownerId }).exec();
     }
 
-    async update(id: string, updateCounterDto: Partial<CreateCounterDto>): Promise<Counter> {
-        return this.counterModel.findByIdAndUpdate(id, updateCounterDto, { new: true }).exec();
+    async update(id: string, updateCounterDto: Partial<CreateCounterDto>, ownerId: Types.ObjectId): Promise<Counter> {
+        return this.counterModel.findByIdAndUpdate({ _id: id, ownerId }, updateCounterDto, { new: true }).exec();
     }
 
-    async delete(id: string): Promise<Counter> {
-        return this.counterModel.findByIdAndDelete(id).exec();
+    async delete(id: string, ownerId: Types.ObjectId): Promise<Counter> {
+        return this.counterModel.findByIdAndDelete({ _id: id, ownerId }).exec();
     }
 
     async findById(id: string | Types.ObjectId): Promise<Counter | null> {
