@@ -9,6 +9,7 @@ export interface ITrip {
     fleetType: Types.ObjectId | FleetType;
     route: Types.ObjectId | Route;
     schedule: Types.ObjectId | Schedule;
+    ticketPrice: number;
     startFrom: Types.ObjectId | Counter;
     endTo: Types.ObjectId | Counter;
     dayOff: string;

@@ -19,6 +19,9 @@ export class Trip extends Document {
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Schedule', required: true })
   schedule: Schedule;
 
+  @Prop({ required: true })
+  ticketPrice: number;
+
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Counter', required: true })
   startFrom: Counter;
 

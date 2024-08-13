@@ -4,11 +4,11 @@ import { Types } from 'mongoose';
 export class CreateAssignedBusDto {
     @IsNotEmpty()
     @IsMongoId()
-    trip: string;
+    trip: Types.ObjectId;
 
     @IsNotEmpty()
     @IsMongoId()
-    bus: string;
+    bus: Types.ObjectId;
 
     @IsNotEmpty()
     @IsMongoId()

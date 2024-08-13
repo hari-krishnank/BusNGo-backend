@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, IsMongoId, IsArray, ArrayMinSize } from 'class-validator';
+import { IsNotEmpty, IsString, IsMongoId, IsArray, ArrayMinSize, IsNumber } from 'class-validator';
 import { Types } from 'mongoose';
 
 export class CreateTripDto {
@@ -17,6 +17,10 @@ export class CreateTripDto {
     @IsNotEmpty()
     @IsMongoId()
     schedule: string;
+
+    @IsNotEmpty()
+    @IsNumber()
+    ticketPrice: number;
 
     @IsNotEmpty()
     @IsMongoId()

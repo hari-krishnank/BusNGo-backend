@@ -11,6 +11,8 @@ export class AssignedBusService {
     async createAssignedBus(createAssignedBusDto: CreateAssignedBusDto, ownerId: string): Promise<AssignedBus> {
         const assignedBusWithOwner = {
             ...createAssignedBusDto,
+            trip: new Types.ObjectId(createAssignedBusDto.trip),
+            bus: new Types.ObjectId(createAssignedBusDto.bus),
             ownerId: new Types.ObjectId(ownerId)
         }
         return this.assignedBusRepository.create(assignedBusWithOwner);

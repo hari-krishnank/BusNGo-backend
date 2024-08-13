@@ -35,10 +35,6 @@ import { Schedule, ScheduleSchema } from './schemas/schedule.schema';
 import { ScheduleController } from './controllers/schedule.controller';
 import { ScheduleService } from './services/schedule.service';
 import { ScheduleRepository } from './repositories/schedule.repository';
-import { TicketPrice, TicketPriceSchema } from './schemas/ticket-price.schema';
-import { TicketPriceController } from './controllers/ticket-price.controller';
-import { TicketPriceRepository } from './repositories/ticket-price.repository';
-import { TicketPriceService } from './services/ticket-price.service';
 import { Trip, TripSchema } from './schemas/trip.schema';
 import { TripController } from './controllers/trip.controller';
 import { TripRepository } from './repositories/trip.repository';
@@ -60,11 +56,10 @@ import { AssignedBusService } from './services/assigned-bus.service';
     MongooseModule.forFeature([{ name: Bus.name, schema: BusSchema }]),
     MongooseModule.forFeature([{ name: Route.name, schema: RouteSchema }]),
     MongooseModule.forFeature([{ name: Schedule.name, schema: ScheduleSchema }]),
-    MongooseModule.forFeature([{ name: TicketPrice.name, schema: TicketPriceSchema }]),
     MongooseModule.forFeature([{ name: Trip.name, schema: TripSchema }]),
     MongooseModule.forFeature([{ name: AssignedBus.name, schema: AssignedBusSchema }])
   ],
-  controllers: [OwnerController, CounterController, AmenityController, SeatLayoutsController, FleetTypeController, BusController, RouteController, ScheduleController, TicketPriceController, TripController, AssignedBusController],
+  controllers: [OwnerController, CounterController, AmenityController, SeatLayoutsController, FleetTypeController, BusController, RouteController, ScheduleController, TripController, AssignedBusController],
   providers: [
     OtpService,
     OtpRepository,
@@ -83,13 +78,11 @@ import { AssignedBusService } from './services/assigned-bus.service';
     RouteRepository,
     ScheduleService,
     ScheduleRepository,
-    TicketPriceRepository,
-    TicketPriceService,
     TripRepository,
     TripService,
     AssignedBusService,
     AssignedBusRepository
   ],
-  exports: [OwnerService, UnverifiedOwnerRepository, FleetTypeService, RouteService, ScheduleService, TicketPriceService, AssignedBusService]
+  exports: [OwnerService, UnverifiedOwnerRepository, FleetTypeService, RouteService, ScheduleService, AssignedBusService]
 })
 export class OwnerModule { }
