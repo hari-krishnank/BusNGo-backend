@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, UseGuards, Request } from '@nestjs/common';
+import { Controller, Post, Body, Get, UseGuards, Request, Query } from '@nestjs/common';
 import { FleetTypeService } from '../services/fleet-type.service';
 import { FleetType } from '../schemas/fleet-type.schema';
 import { OwnerJwtAuthGuard } from 'src/guards/jwtAuthGuard/ownerJwt.guard';
@@ -16,8 +16,12 @@ export class FleetTypeController {
     }
 
     @Get()
-    async getAllFleetTypes(@Request() req) {
+    async getAllFleetTypes(
+        @Request() req,
+        @Query('page') page: number = 1,
+        @Query('limit') limit: number = 5
+    ) {
         const ownerId = req.user.ownerId
-        return this.fleetTypeService.getAllFleetTypes(ownerId);
+        return this.fleetTypeService.getAllFleetTypes(ownerId, page, limit);
     }
 }

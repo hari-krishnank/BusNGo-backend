@@ -1,7 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
-import { Amenity } from './amenity.schema';
-import { SeatLayout } from './seat-layout.schema';
 
 export type FleetTypeDocument = FleetType & Document;
 

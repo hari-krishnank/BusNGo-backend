@@ -4,6 +4,10 @@ import { Model } from 'mongoose';
 import { Trip } from 'src/busOwner/schemas/trip.schema';
 import { AssignedBus } from 'src/busOwner/schemas/assigned-bus.schema';
 import { SearchTripDto } from '../dto/searchTrip.dto';
+import { Amenity } from 'src/busOwner/schemas/amenity.schema';
+import { SeatLayout } from 'src/busOwner/schemas/seat-layout.schema';
+import { Counter } from 'src/busOwner/schemas/counter.schema';
+import { Schedule } from 'src/busOwner/schemas/schedule.schema';
 
 @Injectable()
 export class SearchTripRepository {
@@ -12,8 +16,12 @@ export class SearchTripRepository {
     constructor(
         @InjectModel(Trip.name) private tripModel: Model<Trip>,
         @InjectModel(AssignedBus.name) private assignedBusModel: Model<AssignedBus>,
+        @InjectModel(Amenity.name) private amenityModel: Model<Amenity>,
+        @InjectModel(SeatLayout.name) private seatLayoutModel: Model<SeatLayout>,
+        @InjectModel(Counter.name) private stopModel: Model<Counter>,
+        @InjectModel(Schedule.name) private scheduleModel: Model<Schedule>
     ) { }
-    
+
     async searchTrips(searchTripDto: SearchTripDto): Promise<any[]> {
         const { from, to, date } = searchTripDto;
         const searchDate = new Date(date);
@@ -32,9 +40,32 @@ export class SearchTripRepository {
                 path: 'endTo',
                 match: { location: { $regex: new RegExp(to, 'i') } }
             })
-            .populate('fleetType')
-            .populate('route')
-            .populate('schedule')
+            .populate({
+                path: 'fleetType',
+                populate: [
+                    {
+                        path: 'facilities',
+                        model: 'Amenity'
+                    },
+                    {
+                        path: 'seatLayout',
+                        model: 'SeatLayout'
+                    }
+                ]
+            })
+            .populate({
+                path: 'route',
+                populate: [
+                    {
+                        path: 'additionalStops.stop',
+                        model: 'Counter'
+                    },
+                    {
+                        path: 'schedule',
+                        model: 'Schedule'
+                    }
+                ]
+            })
             .exec();
         const filteredTrips = matchingTrips.filter(trip => trip.startFrom && trip.endTo);
 

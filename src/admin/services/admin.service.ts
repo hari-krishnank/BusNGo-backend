@@ -18,7 +18,7 @@ export class AdminService {
         const adminPassword = this.configService.get<string>('admin.pass');
 
         if (email === adminEmail && password === adminPassword) {
-            const payload = { email, isAdmin: true };
+            const payload = { email, isAdmin: true,  role: 'admin' };
             return {
                 access_token: this.jwtService.sign(payload),
             };

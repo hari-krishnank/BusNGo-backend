@@ -13,13 +13,11 @@ export class TripRepository {
         return createdTrip.save();
     }
 
-    async findAll(ownerId: Types.ObjectId): Promise<Trip[]> {
-        return this.tripModel.find({ ownerId })
-            .populate('fleetType')
-            .populate('route')
-            .populate('schedule')
-            .populate('startFrom')
-            .populate('endTo')
-            .exec();
+    async findAll(ownerId: Types.ObjectId, skip: number, limit: number): Promise<{ trips: Trip[], total: number }> {
+        const [trips, total] = await Promise.all([
+            this.tripModel.find({ ownerId }).skip(skip).limit(limit).populate('fleetType').populate('route').populate('startFrom').populate('endTo').exec(),
+            this.tripModel.countDocuments({ ownerId })
+        ])
+        return { trips, total }
     }
 }

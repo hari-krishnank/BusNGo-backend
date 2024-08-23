@@ -1,10 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request, Query } from '@nestjs/common';
 import { AmenityService } from '../services/amenity.service';
 import { CreateAmenityDto } from '../dto/create-amenity.dto';
 import { UpdateAmenityDto } from '../dto/update-amenity.dto';
 import { OwnerJwtAuthGuard } from 'src/guards/jwtAuthGuard/ownerJwt.guard';
 
-@Controller('amenities')
+@Controller('amenities') 
 @UseGuards(OwnerJwtAuthGuard)
 export class AmenityController {
     constructor(private readonly amenityService: AmenityService) { }
@@ -17,10 +17,14 @@ export class AmenityController {
     }
 
     @Get()
-    findAll(@Request() req) {
+    findAll(
+        @Request() req,
+        @Query('page') page: number = 1,
+        @Query('limit') limit: number = 5
+    ) {
         const ownerId = req.user.ownerId;
         console.log('Fetching amenities for owner:', ownerId);
-        return this.amenityService.findAll(ownerId);
+        return this.amenityService.findAll(ownerId, page, limit);
     }
 
     @Get(':id')

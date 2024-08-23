@@ -15,8 +15,12 @@ export class CounterRepository {
         return createdCounter.save();
     }
 
-    async findAll(ownerId: Types.ObjectId): Promise<Counter[]> {
-        return this.counterModel.find({ ownerId }).exec();
+    async findAllPaginated(ownerId: Types.ObjectId, skip: number, limit: number): Promise<{ counters: Counter[], total: number }> {
+        const [counters, total] = await Promise.all([
+            this.counterModel.find({ ownerId }).skip(skip).limit(limit).exec(),
+            this.counterModel.countDocuments({ ownerId })
+        ]);
+        return { counters, total }; 
     }
 
     async update(id: string, updateCounterDto: Partial<CreateCounterDto>, ownerId: Types.ObjectId): Promise<Counter> {

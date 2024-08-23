@@ -13,10 +13,14 @@ export class ScheduleRepository {
         return newSchedule.save();
     }
 
-    async findAll(ownerId: Types.ObjectId): Promise<Schedule[]> {
-        return this.scheduleModel.find({ ownerId }).exec();
+    async findAll(ownerId: Types.ObjectId, skip: number, limit: number): Promise<{ schedules: Schedule[], total: number }> {
+        const [schedules, total] = await Promise.all([
+            this.scheduleModel.find({ ownerId }).skip(skip).limit(limit).exec(),
+            this.scheduleModel.countDocuments({ ownerId })
+        ])
+        return { schedules, total }
     }
-
+ 
     async findOne(id: string, ownerId: Types.ObjectId): Promise<Schedule> {
         return this.scheduleModel.findById({ _id: id, ownerId }).exec();
     }

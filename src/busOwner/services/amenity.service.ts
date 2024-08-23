@@ -17,8 +17,9 @@ export class AmenityService {
         return this.amenityRepository.create(amenityWithOwner);
     }
 
-    findAll(ownerId: string): Promise<Amenity[]> {
-        return this.amenityRepository.findAll(new Types.ObjectId(ownerId));
+    findAll(ownerId: string, page: number, limit: number): Promise<{ amenities: Amenity[], total: number }> {
+        const skip = (page - 1) * limit
+        return this.amenityRepository.findAll(new Types.ObjectId(ownerId), skip, limit);
     }
 
     findOne(id: string, ownerId: string): Promise<Amenity> {

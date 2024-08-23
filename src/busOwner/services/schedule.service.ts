@@ -16,8 +16,9 @@ export class ScheduleService {
     return this.scheduleRepository.create(scheduleWithOwner);
   }
 
-  async findAll(ownerId: string): Promise<Schedule[]> {
-    return this.scheduleRepository.findAll(new Types.ObjectId(ownerId));
+  async findAll(ownerId: string, page: number, limit: number): Promise<{ schedules: Schedule[], total: number }> {
+    const skip = (page - 1) * limit;
+    return this.scheduleRepository.findAll(new Types.ObjectId(ownerId), skip, limit);
   }
 
   async findOne(id: string, ownerId: string): Promise<Schedule> {

@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { AdminService } from '../services/admin.service';
-import { JwtAuthGuard } from 'src/guards/jwtAuthGuard/jwt.guard';
+import { AdminJwtAuthGuard } from 'src/guards/jwtAuthGuard/adminJwt.guard';
 
 @Controller('admin')
 export class AdminController {
@@ -11,7 +11,7 @@ export class AdminController {
         return this.adminService.login(loginData.email, loginData.password);
     }
 
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(AdminJwtAuthGuard)
     @Get('verify')
     async verifyToken() {
         console.log('verify....');
@@ -19,26 +19,26 @@ export class AdminController {
         return { isValid: true };
     }
 
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(AdminJwtAuthGuard)
     @Get('verified-users')
     async getVerifiedUsers() {
         return this.adminService.getVerifiedUsers();
     }
 
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(AdminJwtAuthGuard)
     @Get('verified-owners')
     async getVerifiedOwners() {
         return this.adminService.getVerifiedOwners();
     }
 
 
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(AdminJwtAuthGuard)
     @Put('owner/:id/block')
     async updateOwnerBlockStatus(@Param('id') id: string, @Body('isBlocked') isBlocked: boolean) {
         return this.adminService.updateOwnerBlockStatus(id, isBlocked);
     }
 
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(AdminJwtAuthGuard)
     @Put('user/:id/block')
     async updateUserBlockStatus(@Param('id') id: string, @Body('isBlocked') isBlocked: boolean) {
         return this.adminService.updateUserBlockStatus(id, isBlocked);

@@ -14,8 +14,12 @@ export class FleetTypeRepository {
         return newFleetType.save();
     }
 
-    async findAll(ownerId: Types.ObjectId): Promise<FleetType[]> {
-        return this.fleetTypeModel.find({ ownerId }).exec();
+    async findAll(ownerId: Types.ObjectId, skip: number, limit: number): Promise<{ fleetTypes: FleetType[], total: number }> {
+        const [fleetTypes, total] = await Promise.all([
+            this.fleetTypeModel.find({ ownerId }).skip(skip).limit(limit).exec(),
+            this.fleetTypeModel.countDocuments({ ownerId })
+        ])
+        return { fleetTypes, total }
     }
 
     async findById(id: string | Types.ObjectId): Promise<FleetType | null> {

@@ -14,10 +14,14 @@ export class AmenityRepository {
         return createdAmenity.save();
     }
 
-    async findAll(ownerId: Types.ObjectId): Promise<Amenity[]> {
-        return this.amenityModel.find({ ownerId }).exec();
+    async findAll(ownerId: Types.ObjectId, skip: number, limit: number): Promise<{ amenities: Amenity[], total: number }> {
+        const [amenities, total] = await Promise.all([
+            this.amenityModel.find({ ownerId }).skip(skip).limit(limit).exec(),
+            this.amenityModel.countDocuments({ ownerId })
+        ])
+        return { amenities, total };
     }
-    
+
     async findOne(id: string, ownerId: Types.ObjectId): Promise<Amenity> {
         return this.amenityModel.findOne({ _id: id, ownerId }).exec();
     }

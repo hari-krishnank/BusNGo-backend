@@ -13,11 +13,11 @@ export class RouteRepository {
         return createdRoute.save();
     }
 
-    async findAll(ownerId: Types.ObjectId): Promise<Route[]> {
-        return this.routeModel.find({ ownerId })
-            .populate('startingPoint')
-            .populate('endingPoint')
-            .populate('additionalStops')
-            .exec();
+    async findAll(ownerId: Types.ObjectId, skip: number, limit: number): Promise<{ routes: Route[], total: number }> {
+        const [routes, total] = await Promise.all([
+            this.routeModel.find({ ownerId }).skip(skip).limit(limit).populate('startingPoint').populate('endingPoint').populate('additionalStops').exec(),
+            this.routeModel.countDocuments({ ownerId })
+        ])
+        return { routes, total }
     }
 }

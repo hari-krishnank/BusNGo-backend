@@ -6,7 +6,7 @@ import { Types } from 'mongoose';
 @Injectable()
 export class FleetTypeService {
     constructor(private fleetTypeRepository: FleetTypeRepository) { }
-    
+
     async createFleetType(fleetTypeData: Partial<FleetType>, ownerId: string): Promise<FleetType> {
         const ownerIdWithFleetType = {
             ...fleetTypeData,
@@ -27,11 +27,12 @@ export class FleetTypeService {
     }
 
 
-    async getAllFleetTypes(ownerId: string): Promise<FleetType[]> {
-        return this.fleetTypeRepository.findAll(new Types.ObjectId(ownerId));
+    async getAllFleetTypes(ownerId: string, page: number, limit: number): Promise<{ fleetTypes: FleetType[], total: number }> {
+        const skip = (page - 1) * limit
+        return this.fleetTypeRepository.findAll(new Types.ObjectId(ownerId), skip, limit);
     }
 
     async findById(id: string | Types.ObjectId): Promise<FleetType | null> {
         return this.fleetTypeRepository.findById(id);
-    }   
+    }
 }

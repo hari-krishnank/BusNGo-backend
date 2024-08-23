@@ -15,8 +15,12 @@ export class AssignedBusRepository {
         return newAssignedBus.save();
     }
 
-    async findAll(ownerId: Types.ObjectId): Promise<AssignedBus[]> {
-        return this.assignedBusModel.find({ ownerId }).populate('trip').populate('bus').exec();
+    async findAll(ownerId: Types.ObjectId, skip: number, limit: number): Promise<{ assignedBuses: AssignedBus[], total: number }> {
+        const [assignedBuses, total] = await Promise.all([
+            this.assignedBusModel.find({ ownerId }).skip(skip).limit(limit).populate('trip').populate('bus').exec(),
+            this.assignedBusModel.countDocuments({ ownerId })
+        ])
+        return { assignedBuses, total }
     }
 
     async findById(id: string, ownerId: Types.ObjectId): Promise<AssignedBus> {

@@ -14,27 +14,42 @@ import { SearchTripController } from "./controllers/search-trip.controller";
 import { SearchTripService } from "./services/search-trip.service";
 import { SearchTripRepository } from "./repositories/search-trip.repository.dto";
 import { AssignedBus, AssignedBusSchema } from "src/busOwner/schemas/assigned-bus.schema";
+import { Amenity, AmenitySchema } from "src/busOwner/schemas/amenity.schema";
+import { SeatLayout, SeatLayoutSchema } from "src/busOwner/schemas/seat-layout.schema";
+import { Counter, counterSchema } from "src/busOwner/schemas/counter.schema";
+import { Schedule, ScheduleSchema } from "src/busOwner/schemas/schedule.schema";
+import { PendingBooking, PendingBookingSchema } from "./schemas/pendingBookings.schema";
+import { PendingBookingRepository } from "./repositories/pending-booking.repository";
+import { PendingBookingService } from "./services/pending-booking.service";
+import { BookingsController } from "./controllers/bookings.controller";
 
 @Module({
-    imports: [  
+    imports: [
         MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
         MongooseModule.forFeature([{ name: UnVerifiedUser.name, schema: UnVerifiedUserSchema }]),
         MongooseModule.forFeature([{ name: Otp.name, schema: OtpSchema }]),
         MongooseModule.forFeature([
             { name: Trip.name, schema: TripSchema },
-            { name: AssignedBus.name, schema: AssignedBusSchema }
+            { name: AssignedBus.name, schema: AssignedBusSchema },
+            { name: Amenity.name, schema: AmenitySchema },
+            { name: SeatLayout.name, schema: SeatLayoutSchema },
+            { name: Counter.name, schema: counterSchema },
+            { name: Schedule.name, schema: ScheduleSchema },
         ]),
+        MongooseModule.forFeature([{ name: PendingBooking.name, schema: PendingBookingSchema }]),
         OwnerModule,
     ],
-    controllers: [UsersController, SearchTripController],
+    controllers: [UsersController, SearchTripController, BookingsController],
     providers: [
         UsersService,
         UsersRepository,
         OtpService,
         OtpRepository,
         SearchTripService,
-        SearchTripRepository
+        SearchTripRepository,
+        PendingBookingRepository,
+        PendingBookingService,
     ],
-    exports: [UsersService, UsersRepository]
+    exports: [UsersService, UsersRepository, PendingBookingService]
 })
-export class UsersModule { }
+export class UsersModule { } 

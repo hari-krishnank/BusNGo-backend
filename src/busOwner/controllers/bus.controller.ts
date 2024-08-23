@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, UseGuards, Request } from '@nestjs/common';
+import { Controller, Post, Body, Get, UseGuards, Request, Query } from '@nestjs/common';
 import { BusService } from '../services/bus.service';
 import { CreateBusDto } from '../dto/create-bus.dto';
 import { Bus } from '../schemas/bus.schema';
@@ -16,8 +16,11 @@ export class BusController {
     }
 
     @Get()
-    async getAllBuses(@Request() req): Promise<Bus[]> {
+    async getAllBuses(
+        @Request() req,
+        @Query('page') page: number = 1,
+        @Query('limit') limit: number = 5) {
         const ownerId = req.user.ownerId
-        return this.busService.getAllBuses(ownerId);
+        return this.busService.getAllBuses(ownerId, page, limit);
     }
 }

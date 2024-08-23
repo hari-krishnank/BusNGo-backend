@@ -1,11 +1,13 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
-import { Counter } from './counter.schema';
 
 @Schema()
 export class Route extends Document {
     @Prop({ required: true })
     name: string;
+
+    @Prop({ type: Types.ObjectId, ref: 'Schedule', required: true })
+    schedule: Types.ObjectId;
 
     @Prop({ type: Types.ObjectId, ref: 'Counter', required: true })
     startingPoint: Types.ObjectId;
@@ -16,8 +18,8 @@ export class Route extends Document {
     @Prop({ default: false })
     hasMoreStoppage: boolean;
 
-    @Prop({ type: [{ type: Types.ObjectId, ref: 'Counter' }], default: [] })
-    additionalStops: Types.ObjectId[];
+    @Prop({ type: [{ _id: false, stop: { type: Types.ObjectId, ref: 'Counter' }, reachingTime: String }], default: [] })
+    additionalStops: { stop: Types.ObjectId; reachingTime: string }[];
 
     @Prop({ required: true })
     distance: string;

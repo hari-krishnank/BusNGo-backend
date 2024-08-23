@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Request, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, Get, Request, UseGuards, Query } from '@nestjs/common';
 import { CreateTripDto } from '../dto/trip.dto';
 import { Trip } from '../schemas/trip.schema';
 import { TripService } from '../services/trip.service';
@@ -16,8 +16,11 @@ export class TripController {
     }
 
     @Get()
-    async getAllTrips(@Request() req): Promise<Trip[]> {
+    async getAllTrips(
+        @Request() req,
+        @Query('page') page: number = 1,
+        @Query('limit') limit: number = 5) {
         const ownerId = req.user.ownerId
-        return this.tripService.getAllTrips(ownerId);
+        return this.tripService.getAllTrips(ownerId, page, limit);
     }
 }

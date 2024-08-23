@@ -15,10 +15,6 @@ export class CreateTripDto {
     route: string;
 
     @IsNotEmpty()
-    @IsMongoId()
-    schedule: string;
-
-    @IsNotEmpty()
     @IsNumber()
     ticketPrice: number;
 

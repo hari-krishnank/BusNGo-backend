@@ -15,8 +15,13 @@ export class SeatLayoutsService {
         return createdSeatLayout.save();
     }
 
-    async findAll(ownerId: Types.ObjectId): Promise<SeatLayout[]> {
-        return this.seatLayoutModel.find({ ownerId }).exec();
+    async findAll(ownerId: Types.ObjectId, page: number, limit: number): Promise<{ seatLayouts: SeatLayout[], total: number }> {
+        const skip = (page - 1) * limit;
+        const [seatLayouts, total] = await Promise.all([
+            this.seatLayoutModel.find({ ownerId }).skip(skip).limit(limit).exec(),
+            this.seatLayoutModel.countDocuments({ ownerId })
+        ]);
+        return { seatLayouts, total };
     }
 
     async findOne(id: string, ownerId: Types.ObjectId): Promise<SeatLayout> {

@@ -1,6 +1,7 @@
 import { Type } from 'class-transformer';
 import { IsString, IsBoolean, IsArray, IsNumber, IsEnum, IsMongoId, IsNotEmpty } from 'class-validator';
 import { Types } from 'mongoose';
+import { AdditionalStop } from './additionalStops.dto';
 
 export class CreateRouteDto {
     @IsString()
@@ -8,19 +9,22 @@ export class CreateRouteDto {
 
     @IsMongoId()
     @Type(() => Types.ObjectId)
+    schedule: Types.ObjectId;
+
+    @IsMongoId()
+    @Type(() => Types.ObjectId)
     startingPoint: Types.ObjectId;
 
     @IsMongoId()
     @Type(() => Types.ObjectId)
-    endingPoint: Types.ObjectId; 
+    endingPoint: Types.ObjectId;
 
     @IsBoolean()
     hasMoreStoppage: boolean;
 
     @IsArray()
-    @IsMongoId({ each: true })
-    @Type(() => Types.ObjectId)
-    additionalStops: Types.ObjectId[];
+    @Type(() => AdditionalStop)
+    additionalStops: AdditionalStop[];
 
     @IsString()
     distance: string;
@@ -33,5 +37,5 @@ export class CreateRouteDto {
 
     @IsNotEmpty()
     @IsMongoId()
-    ownerId:Types.ObjectId
+    ownerId: Types.ObjectId
 }

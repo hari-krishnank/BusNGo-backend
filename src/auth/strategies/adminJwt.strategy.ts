@@ -4,7 +4,7 @@ import { PassportStrategy } from "@nestjs/passport";
 import { ExtractJwt, Strategy } from "passport-jwt";
 
 @Injectable()
-export class OwnerJwtStrategy extends PassportStrategy(Strategy, 'owner-jwt') {
+export class AdminJwtStrategy extends PassportStrategy(Strategy, 'admin-jwt') {
     constructor(configService: ConfigService) {
         super({
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -12,12 +12,12 @@ export class OwnerJwtStrategy extends PassportStrategy(Strategy, 'owner-jwt') {
             secretOrKey: configService.get<string>('JWT_SECRET')
         });
     }
-    
+
     async validate(payload: any) {
-        if (payload.role !== 'owner') {
-            throw new UnauthorizedException('Invalid token for owner');
+        if (!payload.isAdmin || payload.role !== 'admin') {
+            throw new UnauthorizedException('Invalid token for admin');
         }
-        console.log('Owner JWT payload:', payload);
-        return { ownerId: payload.sub, email: payload.email, role: payload.role };
+        console.log('Admin JWT payload:', payload);
+        return { userId: payload.sub, email: payload.email, role: payload.role, isAdmin: payload.isAdmin };
     }
 }

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Delete, Param, Put, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, Post, Body, Delete, Param, Put, UseGuards, Request, Query } from '@nestjs/common';
 import { CounterService } from '../services/counter.service';
 import { CreateCounterDto } from '../dto/create-counter.dto';
 import { OwnerJwtAuthGuard } from 'src/guards/jwtAuthGuard/ownerJwt.guard';
@@ -17,9 +17,13 @@ export class CounterController {
     }
 
     @Get()
-    async getAllCounters(@Request() req) {
-        const ownerId = req.user.ownerId
-        return this.counterService.getAllCounters(ownerId);
+    async getAllCounters(
+        @Request() req,
+        @Query('page') page: number = 1,
+        @Query('limit') limit: number = 5
+    ) {
+        const ownerId = req.user.ownerId;
+        return this.counterService.getAllCounters(ownerId, page, limit);
     }
 
     @Put(':id')

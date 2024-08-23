@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards, Request, Query } from '@nestjs/common';
 import { SeatLayoutsService } from '../services/seat-layouts.service';
 import { CreateSeatLayoutDto } from '../dto/create-seat-layout.dto';
 import { UpdateSeatLayoutDto } from '../dto/update-seat-layout.dto';
@@ -19,9 +19,13 @@ export class SeatLayoutsController {
     }
 
     @Get()
-    async findAll(@Request() req) {
-        const ownerId = new Types.ObjectId(req.user.ownerId)
-        return this.seatLayoutsService.findAll(ownerId);
+    async findAll(
+        @Request() req,
+        @Query('page') page: number = 1,
+        @Query('limit') limit: number = 5
+    ) {
+        const ownerId = new Types.ObjectId(req.user.ownerId);
+        return this.seatLayoutsService.findAll(ownerId, page, limit);
     }
 
     @Get(':id')

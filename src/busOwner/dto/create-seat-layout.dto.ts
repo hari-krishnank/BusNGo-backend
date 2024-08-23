@@ -1,17 +1,9 @@
-import { IsString, IsNumber, IsEnum, IsBoolean, IsArray, IsNotEmpty, IsIn, IsMongoId } from 'class-validator';
+import { IsString, IsNumber, IsBoolean, IsArray, IsNotEmpty, IsIn, IsMongoId } from 'class-validator';
 import { Types } from 'mongoose';
-
-enum DriverSeatPosition {
-    Left = 'Left',
-    Right = 'Right',
-}
 
 export class CreateSeatLayoutDto {
     @IsString()
     layoutName: string;
-
-    @IsEnum(DriverSeatPosition)
-    driverSeatPosition: DriverSeatPosition;
 
     @IsNumber()
     rows: number;

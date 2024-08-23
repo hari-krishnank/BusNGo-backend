@@ -15,8 +15,9 @@ export class CounterService {
         return this.counterRepository.create(counterWithOwner)
     }
 
-    async getAllCounters(ownerId: string): Promise<Counter[]> {
-        return this.counterRepository.findAll(new Types.ObjectId(ownerId));
+    async getAllCounters(ownerId: string, page: number, limit: number): Promise<{ counters: Counter[], total: number }> {
+        const skip = (page - 1) * limit;
+        return this.counterRepository.findAllPaginated(new Types.ObjectId(ownerId), skip, limit);
     }
 
     async updateCounter(id: string, updateCounterDto: Partial<CreateCounterDto>, ownerId: string): Promise<Counter> {
@@ -30,4 +31,4 @@ export class CounterService {
     async findById(id: string | Types.ObjectId): Promise<Counter | null> {
         return this.counterRepository.findById(id);
     }
-}  
+}

@@ -16,7 +16,8 @@ export class TripService {
         return this.tripRepository.create(tripWithOwner);
     }
 
-    async getAllTrips(ownerId: string): Promise<Trip[]> {
-        return this.tripRepository.findAll(new Types.ObjectId(ownerId));
+    async getAllTrips(ownerId: string, page: number, limit: number): Promise<{ trips: Trip[], total: number }> {
+        const skip = (page - 1) * limit;
+        return this.tripRepository.findAll(new Types.ObjectId(ownerId), skip, limit);
     }
 }

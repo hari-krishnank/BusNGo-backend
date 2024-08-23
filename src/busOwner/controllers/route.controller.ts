@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, Post, Body, UseGuards, Request, Query } from '@nestjs/common';
 import { RouteService } from '../services/route.service';
 import { CreateRouteDto } from '../dto/create-route.dto';
 import { Route } from '../schemas/route.schema';
@@ -16,8 +16,11 @@ export class RouteController {
     }
 
     @Get()
-    async findAll(@Request() req): Promise<Route[]> {
+    async findAll(
+        @Request() req,
+        @Query('page') page: number = 1,
+        @Query('limit') limit: number = 5) {
         const ownerId = req.user.ownerId
-        return this.routeService.findAll(ownerId);
+        return this.routeService.findAll(ownerId, page, limit);
     }
 }

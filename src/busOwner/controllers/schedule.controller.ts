@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, Request, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, Request, UseGuards, Query } from '@nestjs/common';
 import { ScheduleService } from '../services/schedule.service';
 import { CreateScheduleDto, UpdateScheduleDto } from '../dto/schedule.dto';
 import { OwnerJwtAuthGuard } from 'src/guards/jwtAuthGuard/ownerJwt.guard';
@@ -12,14 +12,16 @@ export class ScheduleController {
     create(@Request() req, @Body() createScheduleDto: CreateScheduleDto) {
         const ownerId = req.user.ownerId
         console.log('owner id for the schedule', ownerId);
-        
         return this.scheduleService.create(createScheduleDto, ownerId);
     }
 
     @Get()
-    findAll(@Request() req) {
+    findAll(
+        @Request() req,
+        @Query('page') page: number = 1,
+        @Query('limit') limit: number = 5) {
         const ownerId = req.user.ownerId
-        return this.scheduleService.findAll(ownerId);
+        return this.scheduleService.findAll(ownerId, page, limit);
     }
 
     @Get(':id')

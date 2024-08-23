@@ -25,7 +25,8 @@ export class BusService {
         return this.busRepository.create(busWithOwner);
     }
 
-    async getAllBuses(ownerId: string): Promise<Bus[]> {
-        return this.busRepository.findAll(new Types.ObjectId(ownerId));
+    async getAllBuses(ownerId: string, page: number, limit: number): Promise<{ buses: Bus[], total: number }> {
+        const skip = (page - 1) * limit
+        return this.busRepository.findAll(new Types.ObjectId(ownerId), skip, limit);
     }
 }
