@@ -8,7 +8,7 @@ export class Counter extends Document {
 
     @Prop()
     city: string
-
+ 
     @Prop()
     location: string
 

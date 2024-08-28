@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Delete, Param, Put, UseGuards, Request, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Delete, Param, Put, UseGuards, Request, Query, BadRequestException } from '@nestjs/common';
 import { CounterService } from '../services/counter.service';
 import { CreateCounterDto } from '../dto/create-counter.dto';
 import { OwnerJwtAuthGuard } from 'src/guards/jwtAuthGuard/ownerJwt.guard';
@@ -13,7 +13,15 @@ export class CounterController {
         const ownerId = req.user.ownerId
         console.log('Received counter data:', createCounterDto);
         console.log('Creating counter for owner', ownerId);
-        return this.counterService.createCounter(createCounterDto, ownerId);
+
+        try {
+            return await this.counterService.createCounter(createCounterDto, ownerId);
+        } catch (error) {
+            if (error instanceof BadRequestException) {
+                throw error;
+            }
+            throw new BadRequestException('An error occurred while creating the counter');
+        }
     }
 
     @Get()

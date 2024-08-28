@@ -6,9 +6,12 @@ import { CreateCounterDto } from '../dto/create-counter.dto';
 
 @Injectable()
 export class CounterRepository {
-    constructor(
-        @InjectModel(Counter.name) private counterModel: Model<Counter>,
-    ) { }
+    constructor(@InjectModel(Counter.name) private counterModel: Model<Counter>) { }
+
+    async checkExistence(field: string, value: string, ownerId: Types.ObjectId): Promise<boolean> {
+        const count = await this.counterModel.countDocuments({ [field]: value, ownerId });
+        return count > 0;
+    }
 
     async create(createCounterDto: CreateCounterDto & { ownerId: Types.ObjectId }): Promise<Counter> {
         const createdCounter = new this.counterModel(createCounterDto);
@@ -20,7 +23,7 @@ export class CounterRepository {
             this.counterModel.find({ ownerId }).skip(skip).limit(limit).exec(),
             this.counterModel.countDocuments({ ownerId })
         ]);
-        return { counters, total }; 
+        return { counters, total };
     }
 
     async update(id: string, updateCounterDto: Partial<CreateCounterDto>, ownerId: Types.ObjectId): Promise<Counter> {
