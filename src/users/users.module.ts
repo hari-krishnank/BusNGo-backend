@@ -22,6 +22,9 @@ import { PendingBooking, PendingBookingSchema } from "./schemas/pendingBookings.
 import { PendingBookingRepository } from "./repositories/pending-booking.repository";
 import { PendingBookingService } from "./services/pending-booking.service";
 import { BookingsController } from "./controllers/bookings.controller";
+import { StripeController } from "./controllers/stripe.controller";
+import { StripeService } from "./services/stripe.service";
+import { CompletedBooking, CompletedBookingSchema } from "./schemas/completeBooking.schema";
 
 @Module({
     imports: [
@@ -37,9 +40,10 @@ import { BookingsController } from "./controllers/bookings.controller";
             { name: Schedule.name, schema: ScheduleSchema },
         ]),
         MongooseModule.forFeature([{ name: PendingBooking.name, schema: PendingBookingSchema }]),
+        MongooseModule.forFeature([{ name: CompletedBooking.name, schema: CompletedBookingSchema }]),
         OwnerModule,
     ],
-    controllers: [UsersController, SearchTripController, BookingsController],
+    controllers: [UsersController, SearchTripController, BookingsController, StripeController],
     providers: [
         UsersService,
         UsersRepository,
@@ -49,7 +53,8 @@ import { BookingsController } from "./controllers/bookings.controller";
         SearchTripRepository,
         PendingBookingRepository,
         PendingBookingService,
+        StripeService
     ],
-    exports: [UsersService, UsersRepository, PendingBookingService]
+    exports: [UsersService, UsersRepository, PendingBookingService, UsersRepository]
 })
 export class UsersModule { } 

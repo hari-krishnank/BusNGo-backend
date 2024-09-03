@@ -9,7 +9,10 @@ export class User extends Document implements IUser {
     @Prop()
     username: string;
 
-    @Prop()
+    @Prop({ required: false })
+    lastName: string;
+
+    @Prop({ unique: true, required: true })
     email: string;
 
     @Prop()
@@ -18,11 +21,17 @@ export class User extends Document implements IUser {
     @Prop()
     password: string;
 
+    @Prop({ required: false })
+    profileImage: string
+
     @Prop({ default: false })
     is_verified: boolean;
 
     @Prop({ default: false })
     is_blocked: boolean;
+
+    @Prop({ default: false })
+    is_googleUser: boolean
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

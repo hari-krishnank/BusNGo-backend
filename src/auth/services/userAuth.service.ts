@@ -1,16 +1,18 @@
-import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from 'src/users/services/users.service';
 import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
 import { OAuth2Client } from 'google-auth-library';
+import { CreateGoogleUserDto } from 'src/users/dto/create-googleUser.dto';
+import { UsersRepository } from 'src/users/repositories/users.repository';
 
 @Injectable()
 export class UserAuthService {
     private readonly logger = new Logger(UserAuthService.name);
     private googleClient: OAuth2Client;
 
-    constructor(private userService: UsersService, private jwtService: JwtService, private configService: ConfigService) {
+    constructor(private userService: UsersService, private jwtService: JwtService, private configService: ConfigService, private userRepository: UsersRepository) {
         this.googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
     }
 
@@ -35,11 +37,14 @@ export class UserAuthService {
             email: user.email,
             username: user.username,
             is_blocked: user.is_blocked,
-            phone: user.phone
+            phone: user.phone,
+            profileImage: user.profileImage
         };
     }
 
     async login(user: any) {
+        console.log('ithaan login cheyyunna user', user);
+
         if (!user || typeof user !== 'object' || !user.email || !user._id) {
             console.error('Invalid user object:', user);
             throw new Error('Invalid user object');
@@ -55,29 +60,55 @@ export class UserAuthService {
             user: {
                 userId: user._id,
                 email: user.email,
-                username: user.username,
-                phone: user.phone
+                username: user.firstName || user.username,
+                phone: user.phone,
+                profileImage: user.profileImage
             }
         };
     }
 
     async googleLogin(credential: string) {
-        const ticket = await this.googleClient.verifyIdToken({
-            idToken: credential,
-            audience: process.env.GOOGLE_CLIENT_ID,
-        });
+        try {
+            const ticket = await this.googleClient.verifyIdToken({
+                idToken: credential,
+                audience: process.env.GOOGLE_CLIENT_ID,
+            });
 
-        const payload = ticket.getPayload();
-        const email = payload.email;
+            const payload = ticket.getPayload();
+            console.log('Ithaan google login payload ticket', payload);
 
-        let user = await this.userService.findByEmail(email);
-        if (!user) {
-            // user = await this.userService.create({
-            //     email: email, 
-            //     username: payload.name,
-            //     // Add other necessary fields
-            // });
+            const email = payload.email;
+
+            if (!email) {
+                throw new BadRequestException('Invalid Google Credential')
+            }
+
+            let user = await this.userService.findByEmail(email);
+            if (!user) {
+                const newUserData: CreateGoogleUserDto = {
+                    email: payload.email,
+                    username: payload.given_name,
+                    lastName: payload.family_name,
+                    phone: '',
+                    profileImage: payload.picture || '',
+                    is_verified: true,
+                    is_blocked: false,
+                    is_googleUser: true
+                }
+
+                user = await this.userRepository.create(newUserData)
+                console.log('user vannu', user)
+                this.logger.log(`New user created via Google login: ${email}`);
+            } else {
+
+                if (payload.picture && user.profileImage !== payload.picture) {
+                    user = await this.userRepository.updateProfileImage(user._id as string, payload.picture);
+                }
+            }
+            return this.login(user);
+        } catch (error) {
+            this.logger.error(`Google login error: ${error.message}`, error.stack);
+            throw new UnauthorizedException('Failed to authenticate with Google');
         }
-        return this.login(user);
     }
 }

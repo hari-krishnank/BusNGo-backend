@@ -1,22 +1,29 @@
 import { IsString, IsEmail, IsBoolean, IsOptional } from 'class-validator';
-import { IUser } from "../interfaces/user.interface";
+import { IUser } from '../interfaces/user.interface';
 
-export class CreateUserDto implements IUser {
+export class CreateGoogleUserDto implements IUser {
     @IsString()
     username: string;
+    
+    @IsString()
+    lastName: string;
 
     @IsEmail()
     email: string;
 
     @IsString()
-    phone: string;
+    @IsOptional()
+    phone?: string;
 
     @IsString()
-    password: string;
+    profileImage: string;
 
     @IsBoolean()
     is_verified: boolean;
 
     @IsBoolean()
     is_blocked: boolean;
+    
+    @IsBoolean()
+    is_googleUser: boolean;
 }

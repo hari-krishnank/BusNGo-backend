@@ -20,4 +20,4 @@ export class TripRepository {
         ])
         return { trips, total }
     }
-}
+} 

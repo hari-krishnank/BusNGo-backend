@@ -52,4 +52,12 @@ export class UsersRepository {
   async updateUserBlockStatus(id: string, isBlocked: boolean) {
     return this.userModel.findByIdAndUpdate(id, { is_blocked: isBlocked }, { new: true });
   }
+
+  async updateProfileImage(userId: string, profileImage: string) {
+    return this.userModel.findByIdAndUpdate(
+      userId,
+      { profile_image: profileImage },
+      { new: true }
+    ).exec();
+  }
 }

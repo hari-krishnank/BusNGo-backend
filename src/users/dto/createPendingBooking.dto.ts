@@ -1,10 +1,11 @@
-import { IsString, IsNumber, IsArray, ValidateNested, IsMongoId, IsOptional, IsObject } from 'class-validator';
+import { IsString, IsNumber, IsArray, ValidateNested, IsMongoId, IsOptional, IsObject, IsNotEmpty } from 'class-validator';
 import { Type } from 'class-transformer';
 import { TripDetailsDto } from './tripDetails.dto';
 import { TravellerDetailsDto } from './travellerDetails.dto';
 
 export class CreatePendingBookingDto {
-    @IsString()
+    @IsNotEmpty()
+    @IsMongoId()
     userId: string;
 
     @IsString()
@@ -13,6 +14,12 @@ export class CreatePendingBookingDto {
 
     @IsMongoId()
     tripId: string;
+
+    @IsMongoId()
+    busId: string;
+
+    @IsMongoId()
+    routeId: string;
 
     @IsObject()
     @ValidateNested()

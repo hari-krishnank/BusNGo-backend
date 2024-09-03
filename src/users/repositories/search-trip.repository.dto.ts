@@ -8,6 +8,7 @@ import { Amenity } from 'src/busOwner/schemas/amenity.schema';
 import { SeatLayout } from 'src/busOwner/schemas/seat-layout.schema';
 import { Counter } from 'src/busOwner/schemas/counter.schema';
 import { Schedule } from 'src/busOwner/schemas/schedule.schema';
+import { formatTripResult } from 'src/utils/searchTripFormatter';
 
 @Injectable()
 export class SearchTripRepository {
@@ -87,10 +88,7 @@ export class SearchTripRepository {
 
         const result = filteredTrips.map(trip => {
             const assignedBus = assignedBuses.find(ab => ab.trip.toString() === trip._id.toString());
-            return {
-                ...trip.toObject(),
-                bus: assignedBus ? assignedBus.bus : null
-            };
+            return formatTripResult(trip, assignedBus?.bus);
         });
 
         this.logger.log(`Final result: ${result.length}`);

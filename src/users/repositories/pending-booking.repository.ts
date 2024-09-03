@@ -6,13 +6,15 @@ import { PendingBooking } from '../schemas/pendingBookings.schema';
 @Injectable()
 export class PendingBookingRepository {
     constructor(
-        @InjectModel(PendingBooking.name) private pendingBookingModel: Model<PendingBooking>,
+        @InjectModel(PendingBooking.name) private pendingBookingModel: Model<PendingBooking>
     ) { }
 
-    async create(pendingBookingData: Partial<PendingBooking>): Promise<PendingBooking> {
+    async create(pendingBookingData: Partial<PendingBooking> & { userId: Types.ObjectId }): Promise<PendingBooking> {
         const createdPendingBooking = new this.pendingBookingModel({
             ...pendingBookingData,
             tripId: this.toObjectId(pendingBookingData.tripId),
+            busId: this.toObjectId(pendingBookingData.busId),
+            routeId: this.toObjectId(pendingBookingData.routeId),
             boardingPoint: this.toObjectId(pendingBookingData.boardingPoint),
             droppingPoint: this.toObjectId(pendingBookingData.droppingPoint),
         });
@@ -30,6 +32,50 @@ export class PendingBookingRepository {
     }
 
     async findByBookingId(bookingId: string): Promise<PendingBooking | null> {
-        return this.pendingBookingModel.findOne({ bookingId }).exec();
+        console.log(bookingId);
+
+        return this.pendingBookingModel
+            .findOne({ bookingId })
+            .populate({
+                path: 'tripId',
+                select: ['_id', 'title', 'fleetType', 'ticketPrice'],
+                populate: [
+                    {
+                        path: 'fleetType',
+                        select: ['_id', 'name']
+                    },
+                    {
+                        path: 'startFrom',
+                        select: ['_id', 'name', 'city', 'location']
+                    },
+                    {
+                        path: 'endTo',
+                        select: ['_id', 'name', 'city', 'location']
+                    }
+                ]
+            })
+            .populate({
+                path: 'busId',
+                select: ['_id', 'name']
+            })
+            .populate({
+                path: 'routeId',
+                select: ['_id', 'name', 'schedule', 'additionalStops', 'distance', 'time'],
+                populate: [
+                    {
+                        path: 'schedule',
+                        select: ['_id', 'startFrom', 'end', 'duration']
+                    }
+                ]
+            })
+            .populate({
+                path: 'boardingPoint',
+                select: ['_id', 'name', 'city', 'location']
+            })
+            .populate({
+                path: 'droppingPoint',
+                select: ['_id', 'name', 'city', 'location']
+            })
+            .exec();
     }
 }
