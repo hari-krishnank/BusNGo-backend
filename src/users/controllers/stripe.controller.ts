@@ -1,52 +1,37 @@
-import { Controller, Post, Body, Req, Param, Get } from '@nestjs/common';
+import { Controller, Post, Body, Param, Get, Headers } from '@nestjs/common';
 import { StripeService } from '../services/stripe.service';
-import { ConfigService } from '@nestjs/config';
-import Stripe from 'stripe';
+import { RawBody } from 'src/utils/raw-body.decorator';
 
 @Controller('payments')
 export class StripeController {
-    private stripe: Stripe;
-    constructor(private readonly stripeService: StripeService, private configService: ConfigService) { }
+
+    constructor(private readonly stripeService: StripeService) { }
 
     @Post('create-checkout-session')
-    async createCheckoutSession(@Body() body: { amount: number, bookingId: string }) {
-        console.log('Received request body:', body);
-        return this.stripeService.createCheckoutSession(body.amount, body.bookingId);
-    }
-
-    @Post('webhook')
-    async handleStripeWebhook(@Req() request, @Body() payload: any) {
-        const sig = request.headers['stripe-signature'];
-        let event;
-
-        try {
-            event = this.stripe.webhooks.constructEvent(
-                payload,
-                sig,
-                this.configService.get('STRIPE_WEBHOOK_SECRET')
-            );
-        } catch (err) {
-            console.error(err);
-            throw new Error(`Webhook Error: ${err.message}`);
-        }
-
-        // Handle the event
-        switch (event.type) {
-            case 'checkout.session.completed':
-                const session = event.data.object;
-                const bookingId = session.metadata.bookingId;
-                await this.stripeService.completeBooking(bookingId);
-                break;
-            default:
-                console.log(`Unhandled event type ${event.type}`);
-        }
-        return { received: true };
+    async createCheckoutSession(@Body() bookingDetails: any) {
+        console.log('Received request body:', bookingDetails);
+        return this.stripeService.createCheckoutSession(bookingDetails);
     }
 
     @Get('verify-session/:sessionId')
     async verifySession(@Param('sessionId') sessionId: string) {
-        const session = await this.stripe.checkout.sessions.retrieve(sessionId);
-        console.log(session);
-        return { status: session.payment_status };
+        return this.stripeService.verifySession(sessionId);
+    }
+
+    @Post('webhook')
+    async handleWebhook(
+        @Headers('stripe-signature') signature: string,
+        @RawBody() rawBody: Buffer
+    ) {
+        if (!rawBody) {
+            console.error('Raw body not available');
+            throw new Error('No raw body available');
+        }
+        return this.stripeService.handleWebhook(signature, rawBody);
+    }
+
+    @Get('completed-booking/:bookingId')
+    async getCompletedBooking(@Param('bookingId') bookingId: string) {
+        return this.stripeService.getCompletedBooking(bookingId);
     }
 }

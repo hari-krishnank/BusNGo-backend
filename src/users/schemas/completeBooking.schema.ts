@@ -41,6 +41,9 @@ export class CompletedBooking extends Document {
 
     @Prop({ required: true })
     phone: string;
+    
+    @Prop({ required: true })
+    travelDate: string;
 
     @Prop({ default: 'completed' })
     status: string;

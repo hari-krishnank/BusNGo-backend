@@ -41,6 +41,9 @@ export class PendingBooking extends Document {
 
     @Prop({ required: true })
     phone: string;
+    
+    @Prop({ required: true })
+    travelDate: string;
 
     @Prop({ default: 'pending' })
     status: string

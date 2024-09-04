@@ -22,7 +22,6 @@ export class PendingBookingService {
         return `${prefix}${randomNum}`;
     }
 
-
     async getPendingBookingById(bookingId: string): Promise<PendingBooking> {
         const booking = await this.pendingBookingRepository.findByBookingId(bookingId);
         console.log('booking ind',booking);

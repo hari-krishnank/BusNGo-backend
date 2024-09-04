@@ -19,7 +19,7 @@ export class PendingBookingRepository {
             droppingPoint: this.toObjectId(pendingBookingData.droppingPoint),
         });
         return createdPendingBooking.save();
-    }
+    } 
 
     private toObjectId(id: string | Types.ObjectId | undefined): Types.ObjectId | undefined {
         if (id instanceof Types.ObjectId) {

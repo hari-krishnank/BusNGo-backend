@@ -18,7 +18,7 @@ export class BookingsController {
             { ...pendingBookingData, userId: userObjectId },
             userId
         );
-    }
+    } 
 
     @Get('pending-booking/:id')
     async getPendingBooking(@Param('id') bookingId: string) {

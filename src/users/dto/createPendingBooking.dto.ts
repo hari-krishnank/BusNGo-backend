@@ -45,4 +45,7 @@ export class CreatePendingBookingDto {
 
     @IsString()
     phone: string;
+    
+    @IsString()
+    travelDate: string;
 }
