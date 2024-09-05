@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Trip } from 'src/busOwner/schemas/trip.schema';
-import { SearchTripRepository } from '../repositories/search-trip.repository.dto';
+import { SearchTripRepository } from '../repositories/search-trip.repository';
 import { SearchTripDto } from '../dto/searchTrip.dto';
 
 @Injectable()

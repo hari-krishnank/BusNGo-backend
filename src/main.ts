@@ -9,9 +9,11 @@ async function bootstrap() {
   const port = configService.get('APP_PORT');
 
   app.use('/payments/webhook', express.raw({ type: 'application/json' }));
-
+  
   app.enableCors({
-    origin: configService.get('FRONTEND_URL')
+    origin: configService.get('FRONTEND_URL'),
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
   });
   await app.listen(port);
 }

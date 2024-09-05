@@ -41,13 +41,13 @@ export class UsersService {
             if (unverifiedUser) {
                 const user = unverifiedUser.toObject();
                 delete user._id;
-                const latest =  await this.usersRepository.create({
+                const latest = await this.usersRepository.create({
                     ...user,
                     is_verified: true,
                     is_blocked: false
                 });
                 console.log(latest);
-                
+
                 await this.usersRepository.deleteUnverifiedByEmail(email);
                 return true;
             }
@@ -57,5 +57,15 @@ export class UsersService {
 
     async findByEmail(email: string): Promise<IUserDocument | null> {
         return this.usersRepository.findByEmail(email);
+    }
+
+    async findById(id: string) {
+        return this.usersRepository.findById(id);
+    }
+
+    async isUserBlocked(userId: string): Promise<boolean> {
+        const user = await this.findById(userId);
+        console.log(user);
+        return user ? user.is_blocked : false;
     }
 }

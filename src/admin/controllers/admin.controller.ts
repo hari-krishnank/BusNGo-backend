@@ -31,16 +31,9 @@ export class AdminController {
         return this.adminService.getVerifiedOwners();
     }
 
-
     @UseGuards(AdminJwtAuthGuard)
-    @Put('owner/:id/block')
-    async updateOwnerBlockStatus(@Param('id') id: string, @Body('isBlocked') isBlocked: boolean) {
-        return this.adminService.updateOwnerBlockStatus(id, isBlocked);
-    }
-
-    @UseGuards(AdminJwtAuthGuard)
-    @Put('user/:id/block')
-    async updateUserBlockStatus(@Param('id') id: string, @Body('isBlocked') isBlocked: boolean) {
-        return this.adminService.updateUserBlockStatus(id, isBlocked);
+    @Put('toggle-user-block/:userId')
+    async toggleUserBlock(@Param('userId') userId: string, @Body('isBlocked') isBlocked: boolean) {
+        return this.adminService.blockUser(userId, isBlocked);
     }
 }

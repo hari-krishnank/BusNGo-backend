@@ -52,7 +52,8 @@ export class UserAuthService {
         const payload = {
             email: user.email,
             sub: user._id.toString(),
-            role: 'user'
+            role: 'user',
+            userId: user._id.toString() 
         };
         console.log('Payload:', payload);
         return {

@@ -49,9 +49,13 @@ export class UsersRepository {
     return this.userModel.find({ is_verified: true }).exec();
   }
 
+  async findById(id: string): Promise<IUserDocument | null> {
+    return this.userModel.findById(id).exec();
+  }
+
   async updateUserBlockStatus(id: string, isBlocked: boolean) {
     return this.userModel.findByIdAndUpdate(id, { is_blocked: isBlocked }, { new: true });
-  }
+  } 
 
   async updateProfileImage(userId: string, profileImage: string) {
     return this.userModel.findByIdAndUpdate(

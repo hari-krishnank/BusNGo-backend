@@ -9,6 +9,7 @@ import { SeatLayout } from 'src/busOwner/schemas/seat-layout.schema';
 import { Counter } from 'src/busOwner/schemas/counter.schema';
 import { Schedule } from 'src/busOwner/schemas/schedule.schema';
 import { formatTripResult } from 'src/utils/searchTripFormatter';
+import { CompletedBooking } from '../schemas/completeBooking.schema';
 
 @Injectable()
 export class SearchTripRepository {
@@ -20,7 +21,9 @@ export class SearchTripRepository {
         @InjectModel(Amenity.name) private amenityModel: Model<Amenity>,
         @InjectModel(SeatLayout.name) private seatLayoutModel: Model<SeatLayout>,
         @InjectModel(Counter.name) private stopModel: Model<Counter>,
-        @InjectModel(Schedule.name) private scheduleModel: Model<Schedule>
+        @InjectModel(Schedule.name) private scheduleModel: Model<Schedule>,
+        @InjectModel(CompletedBooking.name) private completedBookingModel: Model<CompletedBooking>
+
     ) { }
 
     async searchTrips(searchTripDto: SearchTripDto): Promise<any[]> {
@@ -85,10 +88,40 @@ export class SearchTripRepository {
         }).populate('bus').exec();
 
         this.logger.log(`Assigned buses: ${assignedBuses.length}`);
+        
+        const bookedSeatsAggregation = await this.completedBookingModel.aggregate([
+            {
+                $match: {
+                    tripId: { $in: tripIds },
+                    travelDate: date
+                }
+            },
+            {
+                $group: {
+                    _id: '$tripId',
+                    bookedSeats: { $push: '$selectedSeats' }
+                }
+            },
+            {
+                $project: {
+                    _id: 1,
+                    bookedSeats: {
+                        $reduce: {
+                            input: '$bookedSeats',
+                            initialValue: [],
+                            in: { $setUnion: ['$$value', '$$this'] }
+                        }
+                    }
+                }
+            }
+        ]);
+        const bookedSeatsMap = new Map(bookedSeatsAggregation.map(item => [item._id.toString(), item.bookedSeats]));
 
         const result = filteredTrips.map(trip => {
             const assignedBus = assignedBuses.find(ab => ab.trip.toString() === trip._id.toString());
-            return formatTripResult(trip, assignedBus?.bus);
+            const tripBookedSeats = bookedSeatsMap.get(trip._id.toString()) || [];
+            console.log(tripBookedSeats);
+            return formatTripResult(trip, assignedBus?.bus, bookedSeatsMap.get(trip._id.toString()) || []);
         });
 
         this.logger.log(`Final result: ${result.length}`);

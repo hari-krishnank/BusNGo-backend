@@ -1,11 +1,13 @@
-import { Controller, Post, Body, Param, Get, Headers } from '@nestjs/common';
+import { Controller, Post, Body, Param, Get, Headers, UseGuards } from '@nestjs/common';
 import { StripeService } from '../services/stripe.service';
 import { RawBody } from 'src/utils/raw-body.decorator';
+import { CompletedBookingService } from '../services/completed-booking.service';
+import { JwtAuthGuard } from 'src/guards/jwtAuthGuard/jwt.guard';
 
 @Controller('payments')
 export class StripeController {
 
-    constructor(private readonly stripeService: StripeService) { }
+    constructor(private readonly stripeService: StripeService, private completedBookingService: CompletedBookingService) { }
 
     @Post('create-checkout-session')
     async createCheckoutSession(@Body() bookingDetails: any) {

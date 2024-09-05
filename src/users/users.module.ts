@@ -12,7 +12,7 @@ import { OwnerModule } from "src/busOwner/owner.module";
 import { Trip, TripSchema } from "src/busOwner/schemas/trip.schema";
 import { SearchTripController } from "./controllers/search-trip.controller";
 import { SearchTripService } from "./services/search-trip.service";
-import { SearchTripRepository } from "./repositories/search-trip.repository.dto";
+import { SearchTripRepository } from "./repositories/search-trip.repository";
 import { AssignedBus, AssignedBusSchema } from "src/busOwner/schemas/assigned-bus.schema";
 import { Amenity, AmenitySchema } from "src/busOwner/schemas/amenity.schema";
 import { SeatLayout, SeatLayoutSchema } from "src/busOwner/schemas/seat-layout.schema";
@@ -25,6 +25,10 @@ import { BookingsController } from "./controllers/bookings.controller";
 import { StripeController } from "./controllers/stripe.controller";
 import { StripeService } from "./services/stripe.service";
 import { CompletedBooking, CompletedBookingSchema } from "./schemas/completeBooking.schema";
+import { CompletedBookingService } from "./services/completed-booking.service";
+import { CompletedBookingController } from "./controllers/completed-booking.controller";
+import { CompletedBookingRepository } from "./repositories/completed-booking.repository";
+import { UserBlockedGuard } from "src/guards/userBlocked.guard";
 
 @Module({
     imports: [
@@ -43,7 +47,7 @@ import { CompletedBooking, CompletedBookingSchema } from "./schemas/completeBook
         MongooseModule.forFeature([{ name: CompletedBooking.name, schema: CompletedBookingSchema }]),
         OwnerModule,
     ],
-    controllers: [UsersController, SearchTripController, BookingsController, StripeController],
+    controllers: [UsersController, SearchTripController, BookingsController, StripeController, CompletedBookingController],
     providers: [
         UsersService,
         UsersRepository,
@@ -53,7 +57,10 @@ import { CompletedBooking, CompletedBookingSchema } from "./schemas/completeBook
         SearchTripRepository,
         PendingBookingRepository,
         PendingBookingService,
-        StripeService
+        StripeService,
+        CompletedBookingService, 
+        CompletedBookingRepository,
+        UserBlockedGuard
     ],
     exports: [UsersService, UsersRepository, PendingBookingService, UsersRepository]
 })

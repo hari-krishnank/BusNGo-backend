@@ -65,4 +65,5 @@ export interface FormattedTrip {
         chasisNo: string;
         ModelNo: string;
     } | null;
+    bookedSeats: any
 }

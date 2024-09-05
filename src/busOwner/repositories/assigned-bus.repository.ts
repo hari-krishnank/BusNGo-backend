@@ -27,6 +27,15 @@ export class AssignedBusRepository {
         return this.assignedBusModel.findById({ _id: id, ownerId }).populate('trip').populate('bus').exec();
     }
 
+    async findOverlappingAssignment(busId: Types.ObjectId, tripId: Types.ObjectId, ownerId: Types.ObjectId): Promise<AssignedBus | null> {
+        return this.assignedBusModel.findOne({
+            bus: busId,
+            ownerId: ownerId,
+            _id: { $ne: tripId }, 
+            status: 'Active'
+        }).populate('trip').exec();
+    }
+
     async update(id: string, updateAssignedBusDto: Partial<CreateAssignedBusDto>, ownerId: Types.ObjectId): Promise<AssignedBus> {
         return this.assignedBusModel.findByIdAndUpdate({ _id: id, ownerId }, updateAssignedBusDto, { new: true }).exec();
     }

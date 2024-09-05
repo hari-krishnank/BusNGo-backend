@@ -1,6 +1,6 @@
 import { FormattedTrip } from "./searchTripFormatter.interface";
 
-export function formatTripResult(trip: any, bus: any): FormattedTrip {
+export function formatTripResult(trip: any, bus: any, bookedSeats: string[]): FormattedTrip {
     return {
         _id: trip._id,
         title: trip.title,
@@ -67,6 +67,7 @@ export function formatTripResult(trip: any, bus: any): FormattedTrip {
             engineNo: bus.engineNo,
             chasisNo: bus.chasisNo,
             ModelNo: bus.ModelNo
-        } : null
+        } : null,
+        bookedSeats: bookedSeats
     };
 }
