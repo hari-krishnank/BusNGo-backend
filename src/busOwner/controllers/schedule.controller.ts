@@ -19,8 +19,11 @@ export class ScheduleController {
     findAll(
         @Request() req,
         @Query('page') page: number = 1,
-        @Query('limit') limit: number = 5) {
+        @Query('limit') limit: number = 5) 
+    {
+        console.log('Request user:', req.user)
         const ownerId = req.user.ownerId
+        console.log('Owner ID:', ownerId);  
         return this.scheduleService.findAll(ownerId, page, limit);
     }
 

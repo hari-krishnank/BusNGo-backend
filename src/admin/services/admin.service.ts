@@ -20,7 +20,7 @@ export class AdminService {
         if (email === adminEmail && password === adminPassword) {
             const payload = { email, isAdmin: true, role: 'admin' };
             return {
-                access_token: this.jwtService.sign(payload),
+                access_token: this.jwtService.sign(payload, { secret: this.configService.get<string>('JWT_ADMIN_SECRET') }),
             };
         } else {
             throw new UnauthorizedException('Invalid credentials');

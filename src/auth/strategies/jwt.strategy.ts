@@ -1,4 +1,4 @@
-import { Injectable, UseGuards } from "@nestjs/common";
+import { Injectable, UnauthorizedException, UseGuards } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { PassportStrategy } from "@nestjs/passport";
 import { ExtractJwt, Strategy } from "passport-jwt";
@@ -16,7 +16,11 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     }
 
     async validate(payload: any) {
-        console.log('JWT payload:', payload);
+        console.log('Full payload received in userJwtStrategy:', JSON.stringify(payload, null, 2));
+        if (payload.role !== 'user') {
+            console.log('Invalid role detected. Expected "user", got:', payload.role);
+            throw new UnauthorizedException('Invalid token for this resource');
+        }
         return { userId: payload.sub, email: payload.email, role: payload.role };
     }
 }

@@ -9,12 +9,14 @@ export class AdminJwtStrategy extends PassportStrategy(Strategy, 'admin-jwt') {
         super({
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
             ignoreExpiration: false,
-            secretOrKey: configService.get<string>('JWT_SECRET')
+            secretOrKey: configService.get<string>('JWT_ADMIN_SECRET')
         });
     }
 
     async validate(payload: any) {
+        console.log('Full payload received in AdminJwtStrategy:', JSON.stringify(payload, null, 2));
         if (!payload.isAdmin || payload.role !== 'admin') {
+            console.log('Invalid role detected. Expected "admin", got:', payload.role);
             throw new UnauthorizedException('Invalid token for admin');
         }
         console.log('Admin JWT payload:', payload);

@@ -28,7 +28,7 @@ import { CompletedBooking, CompletedBookingSchema } from "./schemas/completeBook
 import { CompletedBookingService } from "./services/completed-booking.service";
 import { CompletedBookingController } from "./controllers/completed-booking.controller";
 import { CompletedBookingRepository } from "./repositories/completed-booking.repository";
-import { UserBlockedGuard } from "src/guards/userBlocked.guard";
+import { UserBlockedGuard } from "src/guards/blockcheckGuard/userBlocked.guard";
 
 @Module({
     imports: [

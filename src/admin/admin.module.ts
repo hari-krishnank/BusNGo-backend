@@ -5,8 +5,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { UsersModule } from 'src/users/users.module';
 import { OwnerModule } from 'src/busOwner/owner.module';
-import { JwtStrategy } from 'src/auth/strategies/jwt.strategy';
 import { AdminJwtAuthGuard } from 'src/guards/jwtAuthGuard/adminJwt.guard';
+import { AdminJwtStrategy } from 'src/auth/strategies/adminJwt.strategy';
 
 @Module({
   imports: [
@@ -16,13 +16,13 @@ import { AdminJwtAuthGuard } from 'src/guards/jwtAuthGuard/adminJwt.guard';
     JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
-        secret: configService.get<string>('JWT_SECRET'),
+        secret: configService.get<string>('jwt.adminSecret'),
         signOptions: { expiresIn: '24h' },
       }),
       inject: [ConfigService]
     }),
   ],
   controllers: [AdminController],
-  providers: [AdminService, JwtStrategy, AdminJwtAuthGuard]
+  providers: [AdminService, AdminJwtAuthGuard, AdminJwtStrategy]
 })
 export class AdminModule { }

@@ -38,7 +38,7 @@ export class OwnerAuthService {
         console.log('payload of the owner login', payload);
 
         return {
-            access_token: this.jwtService.sign(payload, { secret: this.configService.get<string>('JWT_SECRET') }),
+            access_token: this.jwtService.sign(payload, { secret: this.configService.get<string>('JWT_OWNER_SECRET') }),
         };
     }
 }

@@ -9,13 +9,15 @@ export class OwnerJwtStrategy extends PassportStrategy(Strategy, 'owner-jwt') {
         super({
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
             ignoreExpiration: false,
-            secretOrKey: configService.get<string>('JWT_SECRET')
+            secretOrKey: configService.get<string>('JWT_OWNER_SECRET')
         });
     }
-    
+
     async validate(payload: any) {
+        console.log('Full payload received in OwnerJwtStrategy:', JSON.stringify(payload, null, 2));
         if (payload.role !== 'owner') {
-            throw new UnauthorizedException('Invalid token for owner');
+            console.log('Invalid role detected. Expected "owner", got:', payload.role);
+            throw new UnauthorizedException('Invalid token for this resource');
         }
         console.log('Owner JWT payload:', payload);
         return { ownerId: payload.sub, email: payload.email, role: payload.role };

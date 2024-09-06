@@ -7,7 +7,9 @@ export default () => ({
         pass: process.env.EMAIL_PASS
     },
     jwt: {
-        secret: process.env.JWT_SECRET
+        secret: process.env.JWT_SECRET,
+        adminSecret: process.env.JWT_ADMIN_SECRET,
+        ownerSecret: process.env.JWT_OWNER_SECRET
     },
     admin: {
         email: process.env.ADMIN_EMAIL,

@@ -5,7 +5,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { OwnerModule } from 'src/busOwner/owner.module';
 import { OwnerJwtStrategy } from './strategies/ownerJwt.strategy';
-import { AdminJwtStrategy } from './strategies/adminJwt.strategy';
 import { UserAuthService } from './services/userAuth.service';
 import { OwnerAuthService } from './services/ownerAuth.service';
 import { UserAuthController } from './controllers/userAuth.controller';
@@ -19,13 +18,13 @@ import { OwnerAuthController } from './controllers/ownerAuth.controller';
         JwtModule.registerAsync({
             imports: [ConfigModule],
             useFactory: async (configService: ConfigService) => ({
-                secret: configService.get<string>('JWT_SECRET'),
+                secret: configService.get<string>('jwt.secret'),
                 signOptions: { expiresIn: '24h' },
             }),
             inject: [ConfigService]
         }),
     ],
-    providers: [UserAuthService, OwnerAuthService, JwtStrategy, Logger, OwnerJwtStrategy, AdminJwtStrategy],
+    providers: [UserAuthService, OwnerAuthService, Logger, JwtStrategy, OwnerJwtStrategy],
     controllers: [UserAuthController, OwnerAuthController]
 })
 export class AuthModule { }
