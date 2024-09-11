@@ -29,6 +29,10 @@ import { CompletedBookingService } from "./services/completed-booking.service";
 import { CompletedBookingController } from "./controllers/completed-booking.controller";
 import { CompletedBookingRepository } from "./repositories/completed-booking.repository";
 import { UserBlockedGuard } from "src/guards/blockcheckGuard/userBlocked.guard";
+import { UserProfileController } from "./controllers/user-profile.controller";
+import { UserProfileRepository } from "./repositories/user-profile.repository";
+import { UserProfileService } from "./services/user-profile.service";
+import { AwsModule } from "src/aws/aws.module";
 
 @Module({
     imports: [
@@ -46,8 +50,9 @@ import { UserBlockedGuard } from "src/guards/blockcheckGuard/userBlocked.guard";
         MongooseModule.forFeature([{ name: PendingBooking.name, schema: PendingBookingSchema }]),
         MongooseModule.forFeature([{ name: CompletedBooking.name, schema: CompletedBookingSchema }]),
         OwnerModule,
+        AwsModule
     ],
-    controllers: [UsersController, SearchTripController, BookingsController, StripeController, CompletedBookingController],
+    controllers: [UsersController, SearchTripController, BookingsController, StripeController, CompletedBookingController, UserProfileController],
     providers: [
         UsersService,
         UsersRepository,
@@ -60,8 +65,10 @@ import { UserBlockedGuard } from "src/guards/blockcheckGuard/userBlocked.guard";
         StripeService,
         CompletedBookingService, 
         CompletedBookingRepository,
-        UserBlockedGuard
+        UserBlockedGuard,
+        UserProfileRepository,
+        UserProfileService
     ],
-    exports: [UsersService, UsersRepository, PendingBookingService, UsersRepository]
+    exports: [UsersService, UsersRepository, PendingBookingService, UsersRepository, UserProfileService]
 })
 export class UsersModule { } 

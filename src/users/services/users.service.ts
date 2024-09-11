@@ -9,10 +9,7 @@ import { IUserDocument } from "../interfaces/user-document.interface";
 @Injectable()
 export class UsersService {
 
-    constructor(
-        private readonly usersRepository: UsersRepository,
-        private readonly otpService: OtpService,
-    ) { }
+    constructor(private readonly usersRepository: UsersRepository, private readonly otpService: OtpService) { }
 
     async initiateRegistration(userData: CreateUserDto): Promise<void> {
         const existingUser = await this.usersRepository.findByEmail(userData.email);
@@ -20,11 +17,7 @@ export class UsersService {
             throw new BadRequestException('Email already registered');
         }
 
-        const unverifiedUserData: IUser = {
-            ...userData,
-            is_verified: false,
-            is_blocked: false
-        };
+        const unverifiedUserData: IUser = { ...userData, is_verified: false, is_blocked: false };
 
         await this.usersRepository.createUnverifiedUser(unverifiedUserData);
 
@@ -41,11 +34,7 @@ export class UsersService {
             if (unverifiedUser) {
                 const user = unverifiedUser.toObject();
                 delete user._id;
-                const latest = await this.usersRepository.create({
-                    ...user,
-                    is_verified: true,
-                    is_blocked: false
-                });
+                const latest = await this.usersRepository.create({ ...user, is_verified: true, is_blocked: false });
                 console.log(latest);
 
                 await this.usersRepository.deleteUnverifiedByEmail(email);

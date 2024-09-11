@@ -14,5 +14,12 @@ export default () => ({
     admin: {
         email: process.env.ADMIN_EMAIL,
         pass: process.env.ADMIN_PASSWORD
+    },
+    aws: {
+        accessKeyId: process.env.AWS_ACCESS_ID,
+        secretAccessKey: process.env.AWS_SECRET_KEY,
+        bucketName: process.env.AWS_BUCKET_NAME,
+        region: process.env.AWS_REGION
     }
+
 })

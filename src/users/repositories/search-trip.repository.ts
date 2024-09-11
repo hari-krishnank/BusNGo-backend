@@ -23,7 +23,6 @@ export class SearchTripRepository {
         @InjectModel(Counter.name) private stopModel: Model<Counter>,
         @InjectModel(Schedule.name) private scheduleModel: Model<Schedule>,
         @InjectModel(CompletedBooking.name) private completedBookingModel: Model<CompletedBooking>
-
     ) { }
 
     async searchTrips(searchTripDto: SearchTripDto): Promise<any[]> {

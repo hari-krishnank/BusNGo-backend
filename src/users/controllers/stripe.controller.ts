@@ -2,7 +2,6 @@ import { Controller, Post, Body, Param, Get, Headers, UseGuards } from '@nestjs/
 import { StripeService } from '../services/stripe.service';
 import { RawBody } from 'src/utils/raw-body.decorator';
 import { CompletedBookingService } from '../services/completed-booking.service';
-import { JwtAuthGuard } from 'src/guards/jwtAuthGuard/jwt.guard';
 
 @Controller('payments')
 export class StripeController {

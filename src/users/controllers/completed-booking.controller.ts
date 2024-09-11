@@ -14,8 +14,6 @@ export class CompletedBookingController {
         @Request() req
     ) {
         const userId = req.user.userId;
-        console.log(userId);
-        
         return this.completedBookingService.getAllbookings(userId);
     }
 }
