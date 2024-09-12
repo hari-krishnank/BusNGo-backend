@@ -24,6 +24,12 @@ export class User extends Document implements IUser {
     @Prop({ required: false })
     profileImage: string
 
+    @Prop({ required: false })
+    dob: Date;
+
+    @Prop({ required: false })
+    gender: string;
+
     @Prop({ default: false })
     is_verified: boolean;
 

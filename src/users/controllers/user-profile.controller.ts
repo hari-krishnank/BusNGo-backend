@@ -1,7 +1,8 @@
-import { Controller, Get, UseGuards, Request, UseInterceptors, Post, UploadedFile } from '@nestjs/common';
+import { Controller, Get, UseGuards, Request, UseInterceptors, Post, UploadedFile, Put, Body } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/guards/jwtAuthGuard/jwt.guard';
 import { UserProfileService } from '../services/user-profile.service';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { UpdateUserProfileDto } from '../dto/updateUserProfile.dto';
 
 @Controller('user-profile')
 export class UserProfileController {
@@ -12,6 +13,13 @@ export class UserProfileController {
     async getUserProfile(@Request() req) {
         const userId = req.user.userId;
         return this.userProfileService.getUserProfile(userId);
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Put()
+    async updateUserProfile(@Request() req, @Body() updateUserProfileDto: UpdateUserProfileDto) {
+        const userId = req.user.userId;
+        return this.userProfileService.updateUserProfile(userId, updateUserProfileDto);
     }
 
     @UseGuards(JwtAuthGuard)

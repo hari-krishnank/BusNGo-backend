@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { UserProfileRepository } from '../repositories/user-profile.repository';
 import { AwsService } from 'src/aws/aws.service';
+import { UpdateUserProfileDto } from '../dto/updateUserProfile.dto';
 
 @Injectable()
 export class UserProfileService {
@@ -17,8 +18,39 @@ export class UserProfileService {
             lastName: user.lastName,
             phone: user.phone,
             profileImage: user.profileImage,
+            dob: user?.dob,
+            gender: user?.gender,
             is_googleUser: user.is_googleUser
         }
+    }
+
+    async updateUserProfile(userId: string, updateUserProfileDto: UpdateUserProfileDto) {
+        const user = await this.userProfileRepository.findById(userId);
+        if (!user) {
+            throw new NotFoundException('User not found');
+        }
+
+        const updateData = {
+            username: updateUserProfileDto.firstName,
+            lastName: updateUserProfileDto.lastName,
+            phone: updateUserProfileDto.mobileNumber,
+            dob: updateUserProfileDto.dob,
+            gender: updateUserProfileDto.gender
+        };
+
+        const updatedUser = await this.userProfileRepository.saveDetails(userId, updateData);
+        console.log('updated aaya user:', updatedUser);
+
+        return {
+            username: updatedUser.username,
+            email: updatedUser.email,
+            lastName: updatedUser.lastName,
+            phone: updatedUser.phone,
+            profileImage: updatedUser.profileImage,
+            is_googleUser: updatedUser.is_googleUser,
+            dob: updatedUser.dob,
+            gender: updatedUser.gender
+        };
     }
 
     async updateProfilePhoto(userId: string, file: Express.Multer.File) {
@@ -31,7 +63,7 @@ export class UserProfileService {
 
         user.profileImage = result.url;
         console.log('ethi mwoneee', user.profileImage);
-        
+
         user.profileImage = result.url;
         const updatedUser = await this.userProfileRepository.save(user);
         return { url: updatedUser.profileImage };
