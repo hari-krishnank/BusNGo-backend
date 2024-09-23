@@ -25,7 +25,6 @@ export class OtpService {
                 pass: emailPass,
             },
         });
-
     }
 
     async generateOTP(): Promise<number> {

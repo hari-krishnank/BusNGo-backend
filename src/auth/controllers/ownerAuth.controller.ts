@@ -6,7 +6,7 @@ import { OwnerAuthService } from '../services/ownerAuth.service';
 export class OwnerAuthController {
     constructor(private ownerAuthService: OwnerAuthService, private logger: Logger) { }
 
-    @Post('login')
+    @Post('login') 
     async loginOwner(@Body() loginDto: LoginDto) {
         try {
             const owner = await this.ownerAuthService.validateOwner(loginDto.email, loginDto.password);

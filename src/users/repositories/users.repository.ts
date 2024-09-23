@@ -55,7 +55,7 @@ export class UsersRepository {
 
   async updateUserBlockStatus(id: string, isBlocked: boolean) {
     return this.userModel.findByIdAndUpdate(id, { is_blocked: isBlocked }, { new: true });
-  } 
+  }
 
   async updateProfileImage(userId: string, profileImage: string) {
     return this.userModel.findByIdAndUpdate(
@@ -63,5 +63,16 @@ export class UsersRepository {
       { profile_image: profileImage },
       { new: true }
     ).exec();
+  }
+
+  async updateResetToken(userId: string, resetToken: string, resetTokenExpiration: Date): Promise<void> {
+    await this.userModel.findByIdAndUpdate(userId, {
+      resetToken,
+      resetTokenExpiration,
+    }).exec();
+  }
+  
+  async findByResetToken(resetToken: string): Promise<any> {
+    return this.userModel.findOne({ resetToken }).exec();
   }
 }

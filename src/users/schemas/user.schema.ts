@@ -38,6 +38,12 @@ export class User extends Document implements IUser {
 
     @Prop({ default: false })
     is_googleUser: boolean
+
+    @Prop({ required: false })
+    resetToken: string;
+
+    @Prop({ required: false })
+    resetTokenExpiration: Date;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
