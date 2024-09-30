@@ -37,13 +37,16 @@ export class User extends Document implements IUser {
     is_blocked: boolean;
 
     @Prop({ default: false })
-    is_googleUser: boolean
+    is_googleUser: boolean;
 
     @Prop({ required: false })
     resetToken: string;
 
     @Prop({ required: false })
     resetTokenExpiration: Date;
+
+    @Prop({ default: 0, required: false })
+    walletBalance: number;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

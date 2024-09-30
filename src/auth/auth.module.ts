@@ -9,6 +9,9 @@ import { UserAuthService } from './services/userAuth.service';
 import { OwnerAuthService } from './services/ownerAuth.service';
 import { UserAuthController } from './controllers/userAuth.controller';
 import { OwnerAuthController } from './controllers/ownerAuth.controller';
+import { StaffAuthService } from './services/staffAuth.service';
+import { StaffAuthController } from './controllers/staffAuth.controller';
+import { StaffJwtStrategy } from './strategies/staffJwt.strategy';
 
 @Module({
     imports: [
@@ -24,7 +27,7 @@ import { OwnerAuthController } from './controllers/ownerAuth.controller';
             inject: [ConfigService]
         }),
     ],
-    providers: [UserAuthService, OwnerAuthService, Logger, JwtStrategy, OwnerJwtStrategy],
-    controllers: [UserAuthController, OwnerAuthController]
+    providers: [UserAuthService, OwnerAuthService, StaffAuthService, Logger, JwtStrategy, OwnerJwtStrategy, StaffJwtStrategy],
+    controllers: [UserAuthController, OwnerAuthController, StaffAuthController]
 })
-export class AuthModule { }
+export class AuthModule { } 

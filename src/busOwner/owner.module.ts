@@ -43,6 +43,9 @@ import { AssignedBus, AssignedBusSchema } from './schemas/assigned-bus.schema';
 import { AssignedBusController } from './controllers/assigned-bus.controller';
 import { AssignedBusRepository } from './repositories/assigned-bus.repository';
 import { AssignedBusService } from './services/assigned-bus.service';
+import { Staffs, StaffsSchema } from './schemas/staff.schema';
+import { StaffController } from './controllers/staff.controller';
+import { StaffService } from './services/staff.service';
 
 @Module({
   imports: [
@@ -57,9 +60,10 @@ import { AssignedBusService } from './services/assigned-bus.service';
     MongooseModule.forFeature([{ name: Route.name, schema: RouteSchema }]),
     MongooseModule.forFeature([{ name: Schedule.name, schema: ScheduleSchema }]),
     MongooseModule.forFeature([{ name: Trip.name, schema: TripSchema }]),
-    MongooseModule.forFeature([{ name: AssignedBus.name, schema: AssignedBusSchema }])
+    MongooseModule.forFeature([{ name: AssignedBus.name, schema: AssignedBusSchema }]),
+    MongooseModule.forFeature([{ name: Staffs.name, schema: StaffsSchema }])
   ],
-  controllers: [OwnerController, CounterController, AmenityController, SeatLayoutsController, FleetTypeController, BusController, RouteController, ScheduleController, TripController, AssignedBusController],
+  controllers: [OwnerController, CounterController, AmenityController, SeatLayoutsController, FleetTypeController, BusController, RouteController, ScheduleController, TripController, AssignedBusController, StaffController],
   providers: [
     OtpService,
     OtpRepository,
@@ -81,8 +85,9 @@ import { AssignedBusService } from './services/assigned-bus.service';
     TripRepository,
     TripService,
     AssignedBusService,
-    AssignedBusRepository
+    AssignedBusRepository,
+    StaffService
   ],
-  exports: [OwnerService, UnverifiedOwnerRepository, FleetTypeService, RouteService, ScheduleService, AssignedBusService]
+  exports: [OwnerService, UnverifiedOwnerRepository, FleetTypeService, RouteService, ScheduleService, AssignedBusService, StaffService]
 })
 export class OwnerModule { }

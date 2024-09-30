@@ -6,9 +6,10 @@ import { ConfigService } from '@nestjs/config';
 import { OAuth2Client } from 'google-auth-library';
 import { CreateGoogleUserDto } from 'src/users/dto/create-googleUser.dto';
 import { UsersRepository } from 'src/users/repositories/users.repository';
+import { IUserAuthService } from 'src/users/interfaces/user-auth-service.interface';
 
 @Injectable()
-export class UserAuthService {
+export class UserAuthService implements IUserAuthService {
     private readonly logger = new Logger(UserAuthService.name);
     private googleClient: OAuth2Client;
 
@@ -16,7 +17,7 @@ export class UserAuthService {
         this.googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
     }
 
-    async validateUser(email: string, password: string) {
+    async validateUser(email: string, password: string): Promise<any> {
         const user = await this.userService.findByEmail(email);
         if (!user) {
             this.logger.warn(`User not found for email: ${email}`);
@@ -53,7 +54,7 @@ export class UserAuthService {
             email: user.email,
             sub: user._id.toString(),
             role: 'user',
-            userId: user._id.toString() 
+            userId: user._id.toString()
         };
         console.log('Payload:', payload);
         return {

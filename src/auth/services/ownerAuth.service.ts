@@ -2,14 +2,15 @@ import { Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { OwnerService } from 'src/busOwner/services/owner.service';
 import { ConfigService } from '@nestjs/config';
+import { IOwner, IOwnerAuthService } from 'src/busOwner/interfaces/owner-auth-service.interface';
 
 @Injectable()
-export class OwnerAuthService {
+export class OwnerAuthService implements IOwnerAuthService {
     private readonly logger = new Logger(OwnerAuthService.name);
 
     constructor(private jwtService: JwtService, private ownerService: OwnerService, private configService: ConfigService) { }
 
-    async validateOwner(email: string, password: string) {
+    async validateOwner(email: string, password: string): Promise<IOwner | any> {
         const owner = await this.ownerService.getOwnerDetails(email);
         if (!owner) {
             this.logger.warn(`Owner not found for email: ${email}`);
@@ -29,7 +30,7 @@ export class OwnerAuthService {
         return owner;
     }
 
-    async loginOwner(owner: any) {
+    async loginOwner(owner: IOwner): Promise<{ access_token: string }> {
         if (!owner || typeof owner !== 'object' || !owner.email || !owner._id) {
             console.error('Invalid owner object:', owner);
             throw new Error('Invalid owner object');

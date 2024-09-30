@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Get, Post, Put, Query, Req } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, HttpException, HttpStatus, Post, Put, Query, Req } from '@nestjs/common';
 import { OtpService } from 'src/users/services/otp.service';
 import { CreateOwnerDto } from '../dto/create-owner.dto';
 import { OwnerService } from '../services/owner.service';
@@ -21,10 +21,12 @@ export class OwnerController {
     @Post('verify-otp')
     async verifyOtp(@Body('email') email: string, @Body('otp') otp: number): Promise<boolean> {
         const isValid = await this.otpService.verifyOtp(email, otp);
-        // console.log(isValid,otp);
+        console.log(isValid);
+        if (!isValid) {
+            throw new HttpException('Invalid OTP. Please try again.', HttpStatus.BAD_REQUEST) 
+        }
         return isValid;
     }
-
 
     @Post('resend-otp')
     async resendOtp(@Body('email') email: string): Promise<{ message: string }> {
@@ -35,7 +37,6 @@ export class OwnerController {
     @Put('update-details')
     async updateOwnerDetails(@Body() updateOwnerDetailsDto: UpdateOwnerDetailsDto): Promise<{ message: string }> {
         console.log('Payload received:', updateOwnerDetailsDto);
-        // console.log('update-details endpoint hit');
         const res = await this.ownerService.updateOwnerDetails(updateOwnerDetailsDto);
         return { message: 'Owner details updated successfully' };
     }

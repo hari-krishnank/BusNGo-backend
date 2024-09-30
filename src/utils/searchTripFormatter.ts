@@ -24,11 +24,11 @@ export function formatTripResult(trip: any, bus: any, bookedSeats: string[]): Fo
             name: trip.fleetType.name,
             acStatus: trip.fleetType.acStatus,
             seatLayout: {
-                _id: trip.fleetType.seatLayout._id,
-                layoutName: trip.fleetType.seatLayout.layoutName,
-                selectedSeats: trip.fleetType.seatLayout.selectedSeats,
-                rows: trip.fleetType.seatLayout.rows,
-                columns: trip.fleetType.seatLayout.columns,
+                _id: trip.fleetType.seatLayout?._id,
+                layoutName: trip.fleetType.seatLayout?.layoutName,
+                selectedSeats: trip.fleetType.seatLayout?.selectedSeats,
+                rows: trip.fleetType.seatLayout?.rows,
+                columns: trip.fleetType.seatLayout?.columns,
             },
             facilities: trip.fleetType.facilities.map((facility: any) => ({
                 title: facility.title,

@@ -13,7 +13,7 @@ export class PendingBookingService {
             userId: new Types.ObjectId(userId),
             ...pendingBookingData,
             bookingId,
-        }); 
+        });  
     }
 
     private generateBookingId(): string {
@@ -33,4 +33,4 @@ export class PendingBookingService {
         }
         return booking;
     }
-}
+} 

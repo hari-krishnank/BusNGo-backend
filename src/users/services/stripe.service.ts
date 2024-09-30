@@ -5,17 +5,38 @@ import { InjectModel } from '@nestjs/mongoose';
 import { CompletedBooking } from '../schemas/completeBooking.schema';
 import { Model } from 'mongoose';
 import { PendingBooking } from '../schemas/pendingBookings.schema';
+import { User } from '../schemas/user.schema';
+import { WalletTransaction } from '../schemas/walletTransaction.schema';
+import * as nodemailer from 'nodemailer';
 
 @Injectable()
 export class StripeService {
     private stripe: Stripe;
+    private transporter: nodemailer.Transporter;
+
     constructor(
         private configService: ConfigService,
         @InjectModel(CompletedBooking.name) private completedBookingModel: Model<CompletedBooking>,
-        @InjectModel(PendingBooking.name) private pendingBookingModel: Model<PendingBooking>
+        @InjectModel(PendingBooking.name) private pendingBookingModel: Model<PendingBooking>,
+        @InjectModel(User.name) private userModel: Model<User>,
+        @InjectModel(WalletTransaction.name) private walletTransactionModel: Model<WalletTransaction>
     ) {
         this.stripe = new Stripe(this.configService.get('STRIPE_SECRET_KEY'), {
             apiVersion: '2024-06-20'
+        });
+
+        const emailUser = this.configService.get<string>('email.user');
+        const emailPass = this.configService.get<string>('email.pass');
+
+        this.transporter = nodemailer.createTransport({
+            service: 'gmail',
+            host: 'smtp.gmail.com',
+            port: 587,
+            secure: true,
+            auth: {
+                user: emailUser,
+                pass: emailPass,
+            },
         });
     }
 
@@ -63,11 +84,11 @@ export class StripeService {
             const event = this.stripe.webhooks.constructEvent(payload, signature, webhookSecret);
             if (event.type === 'checkout.session.completed') {
                 const session = event.data.object as Stripe.Checkout.Session;
-                console.log('dasdadsfadsfadsfadsf',session);
-                
+                console.log('dasdadsfadsfadsfadsf', session);
+
                 const bookinggId = session.metadata.bookingId
-                console.log('vfdsfsafasfasfsa0',bookinggId);
-                
+                console.log('vfdsfsafasfasfsa0', bookinggId);
+
                 await this.handleSuccessfulPayment(session, bookinggId);
             }
         } catch (err) {
@@ -94,6 +115,8 @@ export class StripeService {
 
             await completedBooking.save();
             await this.pendingBookingModel.findByIdAndDelete(pendingBooking._id);
+
+            await this.sendTicketEmail(completedBooking);
         } catch (error) {
             console.error(`Error processing payment for booking ID ${bookingId}:`, error);
         }
@@ -150,5 +173,32 @@ export class StripeService {
             throw new NotFoundException('Completed booking not found');
         }
         return completedBooking;
+    }
+
+    private async sendTicketEmail(booking: CompletedBooking): Promise<void> {
+        const mailOptions = {
+            from: this.configService.get<string>('email.user'),
+            to: booking.email,
+            subject: 'Your Bus Ticket Confirmation',
+            html: `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f4f7f9; border-radius: 10px;">
+                <h1 style="color: #333; text-align: center; margin-bottom: 30px;">Your Bus Ticket Confirmation</h1>
+                <div style="background-color: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                    <h2 style="color: #4a90e2;">Booking Details:</h2>
+                    <p><strong>Booking ID:</strong> ${booking._id}</p>
+                </div>
+                <p style="font-size: 14px; color: #666; text-align: center; margin-top: 30px;">
+                    Thank you for choosing our service. Have a safe journey!
+                </p>
+            </div>
+            `
+        };
+
+        try {
+            await this.transporter.sendMail(mailOptions);
+            console.log(`Ticket sent to ${booking.email}`);
+        } catch (error) {
+            console.error('Error sending ticket email:', error);
+        }
     }
 }

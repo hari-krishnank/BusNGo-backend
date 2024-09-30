@@ -33,6 +33,13 @@ import { UserProfileController } from "./controllers/user-profile.controller";
 import { UserProfileRepository } from "./repositories/user-profile.repository";
 import { UserProfileService } from "./services/user-profile.service";
 import { AwsModule } from "src/aws/aws.module";
+import { CoTravellerController } from "./controllers/co-traveller.controller";
+import { CoTravellerRepository } from "./repositories/co-traveller.repository";
+import { CoTravellerService } from "./services/co-traveller.service";
+import { CoTraveller, CoTravellerSchema } from "./schemas/co-traveller.schema";
+import { WalletTransaction, WalletTransactionSchema } from "./schemas/walletTransaction.schema";
+import { WalletController } from "./controllers/wallet.controller";
+import { WalletStripeService } from "./services/wallet-stripe.service";
 
 @Module({
     imports: [
@@ -49,10 +56,12 @@ import { AwsModule } from "src/aws/aws.module";
         ]),
         MongooseModule.forFeature([{ name: PendingBooking.name, schema: PendingBookingSchema }]),
         MongooseModule.forFeature([{ name: CompletedBooking.name, schema: CompletedBookingSchema }]),
+        MongooseModule.forFeature([{ name: CoTraveller.name, schema: CoTravellerSchema }]),
+        MongooseModule.forFeature([{ name: WalletTransaction.name, schema: WalletTransactionSchema }]),
         OwnerModule,
         AwsModule
     ],
-    controllers: [UsersController, SearchTripController, BookingsController, StripeController, CompletedBookingController, UserProfileController],
+    controllers: [UsersController, SearchTripController, BookingsController, StripeController, CompletedBookingController, UserProfileController, CoTravellerController, WalletController],
     providers: [
         UsersService,
         UsersRepository,
@@ -63,12 +72,15 @@ import { AwsModule } from "src/aws/aws.module";
         PendingBookingRepository,
         PendingBookingService,
         StripeService,
-        CompletedBookingService, 
+        CompletedBookingService,
         CompletedBookingRepository,
         UserBlockedGuard,
         UserProfileRepository,
-        UserProfileService
+        UserProfileService,
+        CoTravellerRepository,
+        CoTravellerService,
+        WalletStripeService
     ],
     exports: [UsersService, UsersRepository, PendingBookingService, UsersRepository, UserProfileService]
 })
-export class UsersModule { } 
+export class UsersModule { }
