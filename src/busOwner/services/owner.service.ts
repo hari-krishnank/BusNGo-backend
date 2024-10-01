@@ -22,7 +22,15 @@ export class OwnerService {
             is_verified: false,
         };
 
-        await this.ownerRepository.createUnverifiedOwner(unverifiedOwnerData);
+        // await this.ownerRepository.createUnverifiedOwner(unverifiedOwnerData);
+        if (existingUser && !existingUser.is_verified) {
+            await this.ownerRepository.updateUnverifiedOwner({
+                email: ownerData.email,
+                ...unverifiedOwnerData
+            });
+        } else {
+            await this.ownerRepository.createUnverifiedOwner(unverifiedOwnerData);
+        }
 
         const otp = await this.otpService.generateOTP();
         await this.otpService.sendOTP(ownerData.email, otp);
@@ -61,7 +69,7 @@ export class OwnerService {
 
     async getOwnerDetails(email: string): Promise<IOwner> {
         const owner = await this.ownerRepository.findByEmail(email)
-        console.log('Owner Details :',owner);
+        console.log('Owner Details :', owner);
         if (!owner) {
             throw new NotFoundException('Owner not found');
         }

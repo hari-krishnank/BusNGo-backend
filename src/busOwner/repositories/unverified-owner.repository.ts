@@ -54,27 +54,37 @@ export class UnverifiedOwnerRepository {
         return owner;
     }
 
-    async updateUnverifiedOwner(updateOwnerDetailsDto: UpdateOwnerDetailsDto): Promise<IOwnerDocument | null> {
-        const updateData: Partial<IOwner> = {};
-        if (updateOwnerDetailsDto.firstName) updateData.firstName = updateOwnerDetailsDto.firstName;
-        if (updateOwnerDetailsDto.lastName) updateData.lastName = updateOwnerDetailsDto.lastName;
-        if (updateOwnerDetailsDto.mobile) updateData.mobile = updateOwnerDetailsDto.mobile;
-        if (updateOwnerDetailsDto.password) updateData.password = updateOwnerDetailsDto.password;
-        if (updateOwnerDetailsDto.agencyName) updateData.agencyName = updateOwnerDetailsDto.agencyName;
-        if (updateOwnerDetailsDto.designation) updateData.designation = updateOwnerDetailsDto.designation;
-        if (updateOwnerDetailsDto.country) updateData.country = updateOwnerDetailsDto.country;
-        if (updateOwnerDetailsDto.state) updateData.state = updateOwnerDetailsDto.state;
-        if (updateOwnerDetailsDto.city) updateData.city = updateOwnerDetailsDto.city;
-        if (updateOwnerDetailsDto.postalCode) updateData.postalCode = updateOwnerDetailsDto.postalCode;
-        if (updateOwnerDetailsDto.registeredAddress) updateData.registeredAddress = updateOwnerDetailsDto.registeredAddress;
-        console.log(updateData);
+    // async updateUnverifiedOwner(updateOwnerDetailsDto: UpdateOwnerDetailsDto): Promise<IOwnerDocument | null> {
+    //     const updateData: Partial<IOwner> = {};
+    //     if (updateOwnerDetailsDto.firstName) updateData.firstName = updateOwnerDetailsDto.firstName;
+    //     if (updateOwnerDetailsDto.lastName) updateData.lastName = updateOwnerDetailsDto.lastName;
+    //     if (updateOwnerDetailsDto.mobile) updateData.mobile = updateOwnerDetailsDto.mobile;
+    //     if (updateOwnerDetailsDto.password) updateData.password = updateOwnerDetailsDto.password;
+    //     if (updateOwnerDetailsDto.agencyName) updateData.agencyName = updateOwnerDetailsDto.agencyName;
+    //     if (updateOwnerDetailsDto.designation) updateData.designation = updateOwnerDetailsDto.designation;
+    //     if (updateOwnerDetailsDto.country) updateData.country = updateOwnerDetailsDto.country;
+    //     if (updateOwnerDetailsDto.state) updateData.state = updateOwnerDetailsDto.state;
+    //     if (updateOwnerDetailsDto.city) updateData.city = updateOwnerDetailsDto.city;
+    //     if (updateOwnerDetailsDto.postalCode) updateData.postalCode = updateOwnerDetailsDto.postalCode;
+    //     if (updateOwnerDetailsDto.registeredAddress) updateData.registeredAddress = updateOwnerDetailsDto.registeredAddress;
+    //     console.log(updateData);
 
 
-        return this.unverifiedOwnerModel.findOneAndUpdate(
-            { email: updateOwnerDetailsDto.email },
-            updateData,
-            { new: true }
-        ).exec();
+    //     return this.unverifiedOwnerModel.findOneAndUpdate(
+    //         { email: updateOwnerDetailsDto.email },
+    //         updateData,
+    //         { new: true }
+    //     ).exec();
+    // }
+
+    async updateUnverifiedOwner(ownerData: IOwner): Promise<IOwnerDocument> {
+        const filter = { email: ownerData.email };
+        const update = { ...ownerData };
+        console.log(update);
+        
+        const options = { upsert: true, new: true, setDefaultsOnInsert: true };
+
+        return this.unverifiedOwnerModel.findOneAndUpdate(filter, update, options).exec();
     }
 
     async getVerifiedOwners(): Promise<IVerifiedOwnerDocument[]> {

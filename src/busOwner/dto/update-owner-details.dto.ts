@@ -47,5 +47,5 @@ export class UpdateOwnerDetailsDto {
 
     @IsOptional()
     @IsString()
-    registeredAddress?: string;
+    address?: string;
 }

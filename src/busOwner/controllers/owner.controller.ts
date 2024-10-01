@@ -7,10 +7,7 @@ import { IOwner } from '../interfaces/owner.interface';
 
 @Controller('owner')
 export class OwnerController {
-    constructor(
-        private readonly otpService: OtpService,
-        private ownerService: OwnerService
-    ) { }
+    constructor(private readonly otpService: OtpService, private ownerService: OwnerService) { }
 
     @Post('otp')
     async sendOtp(@Body() createOwnerDto: CreateOwnerDto): Promise<{ message: string }> {
@@ -23,7 +20,7 @@ export class OwnerController {
         const isValid = await this.otpService.verifyOtp(email, otp);
         console.log(isValid);
         if (!isValid) {
-            throw new HttpException('Invalid OTP. Please try again.', HttpStatus.BAD_REQUEST) 
+            throw new HttpException('Invalid OTP. Please try again.', HttpStatus.BAD_REQUEST)
         }
         return isValid;
     }
@@ -39,8 +36,8 @@ export class OwnerController {
         console.log('Payload received:', updateOwnerDetailsDto);
         const res = await this.ownerService.updateOwnerDetails(updateOwnerDetailsDto);
         return { message: 'Owner details updated successfully' };
-    }
-
+    } 
+ 
     @Get('details')
     async getOwnerDetails(@Query('email') email: string): Promise<IOwner> {
         return this.ownerService.getOwnerDetails(email);

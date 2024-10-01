@@ -1,7 +1,7 @@
 export interface IOwner {
     email: string;
-    is_verified : boolean
-    is_blocked ?:boolean
+    is_verified?: boolean
+    is_blocked?: boolean
     firstName?: string;
     lastName?: string;
     mobile?: string;
@@ -12,5 +12,5 @@ export interface IOwner {
     state?: string;
     city?: string;
     postalCode?: string;
-    registeredAddress?: string;
+    address?: string;
 }

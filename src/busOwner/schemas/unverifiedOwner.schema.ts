@@ -42,7 +42,7 @@ export class unverifiedOwner extends Document implements IOwnerDocument {
     postalCode: string;
 
     @Prop()
-    registeredAddress: string;
+    address: string;
 }
 
 export const UnverifiedOwnerSchema = SchemaFactory.createForClass(unverifiedOwner);
