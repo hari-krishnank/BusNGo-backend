@@ -20,7 +20,7 @@ export class UserAuthService implements IUserAuthService {
     async validateUser(email: string, password: string): Promise<any> {
         const user = await this.userService.findByEmail(email);
         if (!user) {
-            this.logger.warn(`User not found for email: ${email}`);
+            this.logger.warn(`User not found for email: ${email}`); 
             return null;
         }
 

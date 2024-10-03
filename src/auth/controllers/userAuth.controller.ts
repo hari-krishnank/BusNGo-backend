@@ -5,7 +5,7 @@ import { UserAuthService } from '../services/userAuth.service';
 export class UserAuthController {
     constructor(private userAuthService: UserAuthService) { }
 
-    @Post('login')
+    @Post('login') 
     async login(@Body() loginDto: { email: string; password: string }) {
         try {
             const user = await this.userAuthService.validateUser(loginDto.email, loginDto.password);

@@ -6,7 +6,6 @@ import { unverifiedOwner } from '../schemas/unverifiedOwner.schema';
 import { IVerifiedOwnerDocument } from '../interfaces/owner.document';
 import { IOwnerDocument } from '../interfaces/verifiedOwner.document';
 import { verifiedOwner } from '../schemas/verifiedOwner.schema';
-import { UpdateOwnerDetailsDto } from '../dto/update-owner-details.dto';
 
 @Injectable()
 export class UnverifiedOwnerRepository {
@@ -21,7 +20,10 @@ export class UnverifiedOwnerRepository {
     }
 
     async createVerifiedOwner(ownerData: IOwner): Promise<IOwnerDocument> {
+        console.log('before saving ownerData', ownerData);
         const newVerifiedOwner = new this.verifiedOwnerModel(ownerData);
+        console.log('new owner', newVerifiedOwner);
+
         return newVerifiedOwner.save();
     }
 
@@ -54,44 +56,29 @@ export class UnverifiedOwnerRepository {
         return owner;
     }
 
-    // async updateUnverifiedOwner(updateOwnerDetailsDto: UpdateOwnerDetailsDto): Promise<IOwnerDocument | null> {
-    //     const updateData: Partial<IOwner> = {};
-    //     if (updateOwnerDetailsDto.firstName) updateData.firstName = updateOwnerDetailsDto.firstName;
-    //     if (updateOwnerDetailsDto.lastName) updateData.lastName = updateOwnerDetailsDto.lastName;
-    //     if (updateOwnerDetailsDto.mobile) updateData.mobile = updateOwnerDetailsDto.mobile;
-    //     if (updateOwnerDetailsDto.password) updateData.password = updateOwnerDetailsDto.password;
-    //     if (updateOwnerDetailsDto.agencyName) updateData.agencyName = updateOwnerDetailsDto.agencyName;
-    //     if (updateOwnerDetailsDto.designation) updateData.designation = updateOwnerDetailsDto.designation;
-    //     if (updateOwnerDetailsDto.country) updateData.country = updateOwnerDetailsDto.country;
-    //     if (updateOwnerDetailsDto.state) updateData.state = updateOwnerDetailsDto.state;
-    //     if (updateOwnerDetailsDto.city) updateData.city = updateOwnerDetailsDto.city;
-    //     if (updateOwnerDetailsDto.postalCode) updateData.postalCode = updateOwnerDetailsDto.postalCode;
-    //     if (updateOwnerDetailsDto.registeredAddress) updateData.registeredAddress = updateOwnerDetailsDto.registeredAddress;
-    //     console.log(updateData);
-
-
-    //     return this.unverifiedOwnerModel.findOneAndUpdate(
-    //         { email: updateOwnerDetailsDto.email },
-    //         updateData,
-    //         { new: true }
-    //     ).exec();
-    // }
-
     async updateUnverifiedOwner(ownerData: IOwner): Promise<IOwnerDocument> {
         const filter = { email: ownerData.email };
         const update = { ...ownerData };
         console.log(update);
-        
+
         const options = { upsert: true, new: true, setDefaultsOnInsert: true };
 
         return this.unverifiedOwnerModel.findOneAndUpdate(filter, update, options).exec();
     }
 
-    async getVerifiedOwners(): Promise<IVerifiedOwnerDocument[]> {
-        return this.verifiedOwnerModel.find({ is_verified: true }).exec();
+    async getVerifiedOwners(skip: number, limit: number): Promise<{ owners: any[], total: number }> {
+        const [owners, total] = await Promise.all([
+            this.verifiedOwnerModel.find({ is_verified: true }).skip(skip).limit(limit).exec(),
+            this.verifiedOwnerModel.countDocuments()
+        ]);
+        return { owners, total }
     }
 
     async updateOwnerBlockStatus(id: string, isBlocked: boolean): Promise<IVerifiedOwnerDocument> {
         return this.verifiedOwnerModel.findByIdAndUpdate(id, { is_blocked: isBlocked }, { new: true }).exec();
+    }
+
+    async findById(id: string): Promise<IVerifiedOwnerDocument | null> {
+        return this.verifiedOwnerModel.findById(id).exec();
     }
 }

@@ -6,12 +6,15 @@ import { OwnerAuthService } from '../services/ownerAuth.service';
 export class OwnerAuthController {
     constructor(private ownerAuthService: OwnerAuthService, private logger: Logger) { }
 
-    @Post('login') 
+    @Post('login')
     async loginOwner(@Body() loginDto: LoginDto) {
         try {
             const owner = await this.ownerAuthService.validateOwner(loginDto.email, loginDto.password);
             if (!owner) {
                 throw new UnauthorizedException('Invalid credentials');
+            }
+            if (owner.is_blocked) {
+                throw new UnauthorizedException('Your account has been blocked. Please contact support.');
             }
             console.log('Owner object before login:', owner);
             const result = await this.ownerAuthService.loginOwner(owner);

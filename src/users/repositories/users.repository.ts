@@ -45,8 +45,12 @@ export class UsersRepository {
     }
   }
 
-  async getVerifiedUsers(): Promise<IUserDocument[]> {
-    return this.userModel.find({ is_verified: true }).exec();
+  async getVerifiedUsers(skip: number, limit: number): Promise<{ users: any[], total: number }> {
+    const [users, total] = await Promise.all([
+      this.userModel.find({ is_verified: true }).skip(skip).limit(limit).exec(),
+      this.userModel.countDocuments()
+    ]);
+    return { users, total }
   }
 
   async findById(id: string): Promise<IUserDocument | null> {
@@ -71,7 +75,7 @@ export class UsersRepository {
       resetTokenExpiration,
     }).exec();
   }
-  
+
   async findByResetToken(resetToken: string): Promise<any> {
     return this.userModel.findOne({ resetToken }).exec();
   }

@@ -44,7 +44,7 @@ export class verifiedOwner extends Document implements IOwner {
     postalCode: string;
 
     @Prop()
-    registeredAddress: string;
+    address: string;
 }
 
 export const verifiedOwnerSchema = SchemaFactory.createForClass(verifiedOwner);

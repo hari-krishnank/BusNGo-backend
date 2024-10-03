@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, Query, Request, UseGuards } from '@nestjs/common';
 import { AdminService } from '../services/admin.service';
 import { AdminJwtAuthGuard } from 'src/guards/jwtAuthGuard/adminJwt.guard';
 
@@ -21,19 +21,33 @@ export class AdminController {
 
     @UseGuards(AdminJwtAuthGuard)
     @Get('verified-users')
-    async getVerifiedUsers() {
-        return this.adminService.getVerifiedUsers();
+    async getVerifiedUsers(
+        @Request() req,
+        @Query('page') page: number = 1,
+        @Query('limit') limit: number = 5
+    ) {
+        return this.adminService.getVerifiedUsers(page,limit);
     }
 
     @UseGuards(AdminJwtAuthGuard)
     @Get('verified-owners')
-    async getVerifiedOwners() {
-        return this.adminService.getVerifiedOwners();
+    async getVerifiedOwners(
+        @Request() req,
+        @Query('page') page: number = 1,
+        @Query('limit') limit: number = 5
+    ) {
+        return this.adminService.getVerifiedOwners(page,limit);
     }
 
     @UseGuards(AdminJwtAuthGuard)
     @Put('toggle-user-block/:userId')
     async toggleUserBlock(@Param('userId') userId: string, @Body('isBlocked') isBlocked: boolean) {
         return this.adminService.blockUser(userId, isBlocked);
+    }
+
+    @UseGuards(AdminJwtAuthGuard)
+    @Put('toggle-owner-block/:ownerId')
+    async toggleOwnerBlock(@Param('ownerId') ownerId: string, @Body('isBlocked') isBlocked: boolean) {
+        return this.adminService.blockOwner(ownerId, isBlocked);
     }
 }

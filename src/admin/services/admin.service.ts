@@ -27,12 +27,14 @@ export class AdminService {
         }
     }
 
-    async getVerifiedUsers() {
-        return this.usersRepository.getVerifiedUsers();
+    async getVerifiedUsers(page: number, limit: number): Promise<{ users: any[], total: number }> {
+        const skip = (page - 1) * limit;
+        return this.usersRepository.getVerifiedUsers(skip, limit);
     }
 
-    async getVerifiedOwners() {
-        return this.ownersRepository.getVerifiedOwners();
+    async getVerifiedOwners(page: number, limit: number): Promise<{ owners: any[], total: number }> {
+        const skip = (page - 1) * limit;
+        return this.ownersRepository.getVerifiedOwners(skip, limit);
     }
 
     async blockUser(userId: string, isBlocked: boolean) {
@@ -43,5 +45,15 @@ export class AdminService {
         user.is_blocked = isBlocked;
         await this.usersRepository.updateUserBlockStatus(userId, isBlocked);
         return { message: `User ${isBlocked ? 'blocked' : 'unblocked'} successfully` };
+    }
+
+    async blockOwner(ownerId: string, isBlocked: boolean) {
+        const owner = await this.ownersRepository.findById(ownerId);
+        if (!owner) {
+            throw new NotFoundException('User not found');
+        }
+        owner.is_blocked = isBlocked;
+        await this.ownersRepository.updateOwnerBlockStatus(ownerId, isBlocked);
+        return { message: `Owner ${isBlocked ? 'blocked' : 'unblocked'} successfully` };
     }
 }

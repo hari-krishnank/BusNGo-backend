@@ -3,7 +3,7 @@ import { CounterRepository } from '../repositories/counters.repositories';
 import { CreateCounterDto } from '../dto/create-counter.dto';
 import { Counter } from '../schemas/counter.schema';
 import { Types } from 'mongoose';
-@Injectable()
+@Injectable() 
 export class CounterService {
     constructor(private readonly counterRepository: CounterRepository) { }
 

@@ -22,7 +22,6 @@ export class OwnerService {
             is_verified: false,
         };
 
-        // await this.ownerRepository.createUnverifiedOwner(unverifiedOwnerData);
         if (existingUser && !existingUser.is_verified) {
             await this.ownerRepository.updateUnverifiedOwner({
                 email: ownerData.email,
@@ -89,10 +88,14 @@ export class OwnerService {
             ...ownerData,
             is_verified: true,
         };
-        console.log(verifiedOwnerData);
+        console.log('service verified ownerData',verifiedOwnerData);
         await this.ownerRepository.createVerifiedOwner(verifiedOwnerData);
         await this.ownerRepository.deleteUnverifiedByEmail(email);
 
         return true;
+    }
+
+    async findById(id: string) {
+        return this.ownerRepository.findById(id);
     }
 }

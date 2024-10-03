@@ -24,7 +24,7 @@ export class CounterRepository {
             this.counterModel.countDocuments({ ownerId })
         ]);
         return { counters, total };
-    }
+    } 
 
     async update(id: string, updateCounterDto: Partial<CreateCounterDto>, ownerId: Types.ObjectId): Promise<Counter> {
         return this.counterModel.findByIdAndUpdate({ _id: id, ownerId }, updateCounterDto, { new: true }).exec();

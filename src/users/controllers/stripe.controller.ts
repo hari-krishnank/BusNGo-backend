@@ -1,6 +1,6 @@
 import { Controller, Post, Body, Param, Get, Headers, UseGuards } from '@nestjs/common';
 import { StripeService } from '../services/stripe.service';
-import { RawBody } from 'src/utils/raw-body.decorator';
+import { RawBody } from 'src/utils/decorators/stripeRawBody/raw-body.decorator';
 import { CompletedBookingService } from '../services/completed-booking.service';
 
 @Controller('payments')
