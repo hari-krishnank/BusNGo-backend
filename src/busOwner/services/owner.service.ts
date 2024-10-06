@@ -13,13 +13,23 @@ export class OwnerService {
 
     async initiateOwnerRegistration(ownerData: CreateOwnerDto): Promise<void> {
         const existingUser = await this.ownerRepository.findByEmail(ownerData.email);
+
         if (existingUser && existingUser.is_verified) {
             throw new BadRequestException('Email already registered');
+        }
+
+        if (existingUser && existingUser.registrationRequestSent) {
+            if (existingUser.statusOfApproval === 'rejected') {
+                throw new BadRequestException('Registration request denied. Please contact support for details.');
+            }
+            throw new BadRequestException('Registration request already sent and pending approval');
         }
 
         const unverifiedOwnerData: IOwner = {
             ...ownerData,
             is_verified: false,
+            registrationRequestSent: false,
+            statusOfApproval: 'pending'
         };
 
         if (existingUser && !existingUser.is_verified) {
@@ -81,16 +91,10 @@ export class OwnerService {
             throw new BadRequestException('Unverified owner not found');
         }
 
-        const ownerData = unverifiedOwner.toObject();
-        delete ownerData._id;
-
-        const verifiedOwnerData: IOwner = {
-            ...ownerData,
-            is_verified: true,
-        };
-        console.log('service verified ownerData',verifiedOwnerData);
-        await this.ownerRepository.createVerifiedOwner(verifiedOwnerData);
-        await this.ownerRepository.deleteUnverifiedByEmail(email);
+        await this.ownerRepository.updateUnverifiedOwner({
+            ...unverifiedOwner.toObject(),
+            registrationRequestSent: true,
+        });
 
         return true;
     }

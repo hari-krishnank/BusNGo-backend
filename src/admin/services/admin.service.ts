@@ -56,4 +56,23 @@ export class AdminService {
         await this.ownersRepository.updateOwnerBlockStatus(ownerId, isBlocked);
         return { message: `Owner ${isBlocked ? 'blocked' : 'unblocked'} successfully` };
     }
+
+    async getOwnerRegistrationRequests(page: number, limit: number): Promise<{ owners: any[], total: number }> {
+        const skip = (page - 1) * limit;
+        return this.ownersRepository.getOwnerRegistrationRequests(skip, limit);
+    }
+
+    async approveOwnerRegistration(email: string) {
+        try {
+            const approvedOwner = await this.ownersRepository.approveOwnerRegistration(email);
+            return { message: 'Owner registration approved successfully', owner: approvedOwner };
+        } catch (error) {
+            throw new NotFoundException('Owner registration request not found');
+        }
+    }
+
+    async rejectOwnerRegistration(email: string) {
+        const rejectedOwner = await this.ownersRepository.rejectOwnerRegistration(email);
+        return rejectedOwner;
+    }
 }

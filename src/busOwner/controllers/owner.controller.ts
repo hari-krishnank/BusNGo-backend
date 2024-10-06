@@ -36,8 +36,8 @@ export class OwnerController {
         console.log('Payload received:', updateOwnerDetailsDto);
         const res = await this.ownerService.updateOwnerDetails(updateOwnerDetailsDto);
         return { message: 'Owner details updated successfully' };
-    } 
- 
+    }
+
     @Get('details')
     async getOwnerDetails(@Query('email') email: string): Promise<IOwner> {
         return this.ownerService.getOwnerDetails(email);
@@ -45,11 +45,11 @@ export class OwnerController {
 
     @Post('confirm-details')
     async confirmOwnerDetails(@Body('email') email: string): Promise<{ message: string }> {
-        const isSaved = await this.ownerService.confirmOwnerDetails(email);
-        if (isSaved) {
-            return { message: 'Owner confirmed and saved to verified collection successfully' };
+        const isRequestSent = await this.ownerService.confirmOwnerDetails(email);
+        if (isRequestSent) {
+            return { message: 'Registration request sent successfully' };
         } else {
-            throw new BadRequestException('Error confirming owner details');
+            throw new BadRequestException('Error sending registration request');
         }
     }
 }

@@ -14,29 +14,19 @@ export class AdminController {
     @UseGuards(AdminJwtAuthGuard)
     @Get('verify')
     async verifyToken() {
-        console.log('verify....');
-
         return { isValid: true };
     }
 
     @UseGuards(AdminJwtAuthGuard)
     @Get('verified-users')
-    async getVerifiedUsers(
-        @Request() req,
-        @Query('page') page: number = 1,
-        @Query('limit') limit: number = 5
-    ) {
-        return this.adminService.getVerifiedUsers(page,limit);
+    async getVerifiedUsers(@Request() req, @Query('page') page: number = 1, @Query('limit') limit: number = 5) {
+        return this.adminService.getVerifiedUsers(page, limit);
     }
 
     @UseGuards(AdminJwtAuthGuard)
     @Get('verified-owners')
-    async getVerifiedOwners(
-        @Request() req,
-        @Query('page') page: number = 1,
-        @Query('limit') limit: number = 5
-    ) {
-        return this.adminService.getVerifiedOwners(page,limit);
+    async getVerifiedOwners(@Request() req, @Query('page') page: number = 1, @Query('limit') limit: number = 5) {
+        return this.adminService.getVerifiedOwners(page, limit);
     }
 
     @UseGuards(AdminJwtAuthGuard)
@@ -49,5 +39,25 @@ export class AdminController {
     @Put('toggle-owner-block/:ownerId')
     async toggleOwnerBlock(@Param('ownerId') ownerId: string, @Body('isBlocked') isBlocked: boolean) {
         return this.adminService.blockOwner(ownerId, isBlocked);
+    }
+
+    @UseGuards(AdminJwtAuthGuard)
+    @Get('owner-registration-requests')
+    async getOwnerRegistrationRequests(@Query('page') page: number = 1, @Query('limit') limit: number = 5) {
+        return this.adminService.getOwnerRegistrationRequests(page, limit);
+    }
+
+    @UseGuards(AdminJwtAuthGuard)
+    @Post('approve-owner-registration/:email')
+    async approveOwnerRegistration(@Param('email') email: string) {
+        console.log('Received approval request for email:', email);
+        return this.adminService.approveOwnerRegistration(email);
+    }
+
+    @UseGuards(AdminJwtAuthGuard)
+    @Post('reject-owner-registration/:email')
+    async rejectOwnerRegistration(@Param('email') email: string) {
+        console.log('Received rejection request for email:', email);
+        return this.adminService.rejectOwnerRegistration(email);
     }
 }

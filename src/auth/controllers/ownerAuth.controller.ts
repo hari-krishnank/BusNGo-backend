@@ -16,9 +16,7 @@ export class OwnerAuthController {
             if (owner.is_blocked) {
                 throw new UnauthorizedException('Your account has been blocked. Please contact support.');
             }
-            console.log('Owner object before login:', owner);
             const result = await this.ownerAuthService.loginOwner(owner);
-            console.log('Login result:', result);
             return result;
         } catch (error) {
             if (error instanceof UnauthorizedException) {

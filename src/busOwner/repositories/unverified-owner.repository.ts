@@ -20,10 +20,7 @@ export class UnverifiedOwnerRepository {
     }
 
     async createVerifiedOwner(ownerData: IOwner): Promise<IOwnerDocument> {
-        console.log('before saving ownerData', ownerData);
         const newVerifiedOwner = new this.verifiedOwnerModel(ownerData);
-        console.log('new owner', newVerifiedOwner);
-
         return newVerifiedOwner.save();
     }
 
@@ -36,12 +33,10 @@ export class UnverifiedOwnerRepository {
         return this.unverifiedOwnerModel.findOne({ email }).exec();
     }
 
-
     async deleteUnverifiedByEmail(email: string): Promise<void> {
         try {
             await this.unverifiedOwnerModel.deleteMany({ email });
         } catch (error) {
-            console.error('Error deleting unverified owner:', error);
             throw error;
         }
     }
@@ -52,6 +47,7 @@ export class UnverifiedOwnerRepository {
         if (!owner) {
             owner = await this.verifiedOwnerModel.findOne({ email }).exec();
         }
+        console.log(owner.email);
 
         return owner;
     }
@@ -59,8 +55,6 @@ export class UnverifiedOwnerRepository {
     async updateUnverifiedOwner(ownerData: IOwner): Promise<IOwnerDocument> {
         const filter = { email: ownerData.email };
         const update = { ...ownerData };
-        console.log(update);
-
         const options = { upsert: true, new: true, setDefaultsOnInsert: true };
 
         return this.unverifiedOwnerModel.findOneAndUpdate(filter, update, options).exec();
@@ -80,5 +74,43 @@ export class UnverifiedOwnerRepository {
 
     async findById(id: string): Promise<IVerifiedOwnerDocument | null> {
         return this.verifiedOwnerModel.findById(id).exec();
+    }
+
+    async getOwnerRegistrationRequests(skip: number, limit: number): Promise<{ owners: IOwnerDocument[], total: number }> {
+        const [owners, total] = await Promise.all([
+            this.unverifiedOwnerModel.find({ registrationRequestSent: true, statusOfApproval: 'pending' }).skip(skip).limit(limit).exec(),
+            this.unverifiedOwnerModel.countDocuments({ registrationRequestSent: true })
+        ]);
+        return { owners, total };
+    }
+
+    async approveOwnerRegistration(email: string): Promise<IVerifiedOwnerDocument> {
+        const unverifiedOwner = await this.unverifiedOwnerModel.findOne({ email }).exec();
+        console.log('approve cheyyenda owner:', unverifiedOwner);
+        if (!unverifiedOwner) {
+            throw new Error('Unverified owner not found');
+        }
+
+        unverifiedOwner.statusOfApproval = 'approved';
+        await unverifiedOwner.save();
+
+        const verifiedOwnerData: IOwner = {
+            ...unverifiedOwner.toObject(),
+            is_verified: true,
+        };
+
+        const newVerifiedOwner = new this.verifiedOwnerModel(verifiedOwnerData);
+        await newVerifiedOwner.save();
+        return newVerifiedOwner;
+    }
+
+    async rejectOwnerRegistration(email: string): Promise<IOwnerDocument> {
+        const unverifiedOwner = await this.unverifiedOwnerModel.findOne({ email }).exec();
+        if (!unverifiedOwner) {
+            throw new Error('Unverified owner not found');
+        }
+
+        unverifiedOwner.statusOfApproval = 'rejected';
+        return unverifiedOwner.save();
     }
 }
