@@ -57,9 +57,18 @@ export class AdminService {
         return { message: `Owner ${isBlocked ? 'blocked' : 'unblocked'} successfully` };
     }
 
-    async getOwnerRegistrationRequests(page: number, limit: number): Promise<{ owners: any[], total: number }> {
+    async getOwnerRegistrationRequests(page: number, limit: number) {
         const skip = (page - 1) * limit;
-        return this.ownersRepository.getOwnerRegistrationRequests(skip, limit);
+        return this.ownersRepository.getOwnerRegistrationRequests(page, limit);
+    }
+
+    async getRejectedOwnerRequests(page: number, limit: number) {
+        const skip = (page - 1) * limit;
+        return this.ownersRepository.getRejectedOwnerRequests(page, limit);
+    }
+
+    async getPendingOwnerRequestsCount(): Promise<number> {
+        return this.ownersRepository.getPendingRequestsCount();
     }
 
     async approveOwnerRegistration(email: string) {

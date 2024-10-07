@@ -43,12 +43,9 @@ export class UnverifiedOwnerRepository {
 
     async findByEmail(email: string): Promise<IOwner | null> {
         let owner = await this.unverifiedOwnerModel.findOne({ email }).exec();
-
         if (!owner) {
             owner = await this.verifiedOwnerModel.findOne({ email }).exec();
         }
-        console.log(owner.email);
-
         return owner;
     }
 
@@ -76,23 +73,29 @@ export class UnverifiedOwnerRepository {
         return this.verifiedOwnerModel.findById(id).exec();
     }
 
-    async getOwnerRegistrationRequests(skip: number, limit: number): Promise<{ owners: IOwnerDocument[], total: number }> {
-        const [owners, total] = await Promise.all([
-            this.unverifiedOwnerModel.find({ registrationRequestSent: true, statusOfApproval: 'pending' }).skip(skip).limit(limit).exec(),
-            this.unverifiedOwnerModel.countDocuments({ registrationRequestSent: true })
-        ]);
+    async getOwnerRegistrationRequests(page: number, limit: number): Promise<{ owners: IOwnerDocument[], total: number }> {
+        const total = await this.unverifiedOwnerModel.countDocuments({ statusOfApproval: 'pending' });
+        const skip = Math.min((page - 1) * limit, total);
+        const owners = await this.unverifiedOwnerModel.find({ statusOfApproval: 'pending' }).skip(skip).limit(limit).exec();
         return { owners, total };
+    }
+
+    async getRejectedOwnerRequests(page: number, limit: number): Promise<{ owners: IOwnerDocument[], total: number }> {
+        const total = await this.unverifiedOwnerModel.countDocuments({ statusOfApproval: 'rejected' });
+        const skip = Math.min((page - 1) * limit, total);
+        const owners = await this.unverifiedOwnerModel.find({ statusOfApproval: 'rejected' }).skip(skip).limit(limit).exec();
+        return { owners, total };
+    }
+
+    async getPendingRequestsCount(): Promise<number> {
+        return this.unverifiedOwnerModel.countDocuments({ statusOfApproval: 'pending' }).exec();
     }
 
     async approveOwnerRegistration(email: string): Promise<IVerifiedOwnerDocument> {
         const unverifiedOwner = await this.unverifiedOwnerModel.findOne({ email }).exec();
-        console.log('approve cheyyenda owner:', unverifiedOwner);
         if (!unverifiedOwner) {
             throw new Error('Unverified owner not found');
         }
-
-        unverifiedOwner.statusOfApproval = 'approved';
-        await unverifiedOwner.save();
 
         const verifiedOwnerData: IOwner = {
             ...unverifiedOwner.toObject(),
@@ -101,6 +104,9 @@ export class UnverifiedOwnerRepository {
 
         const newVerifiedOwner = new this.verifiedOwnerModel(verifiedOwnerData);
         await newVerifiedOwner.save();
+
+        await this.unverifiedOwnerModel.deleteOne({ email }).exec();
+
         return newVerifiedOwner;
     }
 
@@ -109,7 +115,6 @@ export class UnverifiedOwnerRepository {
         if (!unverifiedOwner) {
             throw new Error('Unverified owner not found');
         }
-
         unverifiedOwner.statusOfApproval = 'rejected';
         return unverifiedOwner.save();
     }

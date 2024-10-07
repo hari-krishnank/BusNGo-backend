@@ -48,16 +48,26 @@ export class AdminController {
     }
 
     @UseGuards(AdminJwtAuthGuard)
+    @Get('pending-owner-requests-count')
+    async getPendingOwnerRequestsCount() {
+        return { count: await this.adminService.getPendingOwnerRequestsCount() };
+    }
+
+    @UseGuards(AdminJwtAuthGuard)
     @Post('approve-owner-registration/:email')
     async approveOwnerRegistration(@Param('email') email: string) {
-        console.log('Received approval request for email:', email);
         return this.adminService.approveOwnerRegistration(email);
     }
 
     @UseGuards(AdminJwtAuthGuard)
     @Post('reject-owner-registration/:email')
     async rejectOwnerRegistration(@Param('email') email: string) {
-        console.log('Received rejection request for email:', email);
         return this.adminService.rejectOwnerRegistration(email);
+    }
+
+    @UseGuards(AdminJwtAuthGuard)
+    @Get('rejected-owner-requests')
+    async getRejectedOwnerRequests(@Query('page') page: number = 1, @Query('limit') limit: number = 5) {
+        return this.adminService.getRejectedOwnerRequests(page, limit);
     }
 }
