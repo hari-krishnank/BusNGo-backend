@@ -119,4 +119,10 @@ export class UsersService {
 
         await user.save();
     }
+
+    async updateWalletBalance(userId: string, amount: number): Promise<IUserDocument> {
+        const user = await this.findById(userId);
+        user.walletBalance += amount;
+        return user.save();
+    }
 }

@@ -7,6 +7,7 @@ export interface IUser {
     profileImage?: string;
     dob?: Date;
     gender?: string;
+    walletBalance?: number;
     is_verified: boolean;
     is_blocked: boolean;
 }

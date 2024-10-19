@@ -88,6 +88,6 @@ import { StaffService } from './services/staff.service';
     AssignedBusRepository,
     StaffService
   ],
-  exports: [OwnerService, UnverifiedOwnerRepository, FleetTypeService, RouteService, ScheduleService, AssignedBusService, StaffService]
+  exports: [OwnerService, UnverifiedOwnerRepository, FleetTypeService, RouteService, ScheduleService, AssignedBusService, StaffService, TripRepository]
 })
 export class OwnerModule { }

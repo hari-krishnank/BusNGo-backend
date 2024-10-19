@@ -8,6 +8,8 @@ import { PendingBooking } from '../schemas/pendingBookings.schema';
 import { User } from '../schemas/user.schema';
 import { WalletTransaction } from '../schemas/walletTransaction.schema';
 import * as nodemailer from 'nodemailer';
+import { PendingBookingService } from './pending-booking.service';
+import { Route } from 'src/busOwner/interfaces/route.interface';
 
 @Injectable()
 export class StripeService {
@@ -16,6 +18,7 @@ export class StripeService {
 
     constructor(
         private configService: ConfigService,
+        private pendingBookingService: PendingBookingService,
         @InjectModel(CompletedBooking.name) private completedBookingModel: Model<CompletedBooking>,
         @InjectModel(PendingBooking.name) private pendingBookingModel: Model<PendingBooking>,
         @InjectModel(User.name) private userModel: Model<User>,
@@ -84,10 +87,8 @@ export class StripeService {
             const event = this.stripe.webhooks.constructEvent(payload, signature, webhookSecret);
             if (event.type === 'checkout.session.completed') {
                 const session = event.data.object as Stripe.Checkout.Session;
-                console.log('dasdadsfadsfadsfadsf', session);
 
                 const bookinggId = session.metadata.bookingId
-                console.log('vfdsfsafasfasfsa0', bookinggId);
 
                 await this.handleSuccessfulPayment(session, bookinggId);
             }
@@ -109,9 +110,30 @@ export class StripeService {
                 console.error(`Pending booking not found for ID ${bookingId}`);
                 return;
             }
-            const completedBooking = new this.completedBookingModel(pendingBooking.toObject());
-            completedBooking.status = 'completed';
-            completedBooking.completedAt = new Date();
+            const tripDetails = await this.pendingBookingService.getTripDetails(pendingBooking.tripId);
+
+            const { currentRefundPercentage, hoursUntilDeparture } =
+                this.pendingBookingService.calculateTimeAndRefund(
+                    pendingBooking.travelDate,
+                    tripDetails.route.schedule.startFrom,
+                    pendingBooking.cancellationPolicy
+                );
+
+            // const completedBooking = new this.completedBookingModel(pendingBooking.toObject());
+            // console.log(completedBooking);
+
+            // completedBooking.status = 'completed';
+            // completedBooking.completedAt = new Date();
+            const completedBooking = new this.completedBookingModel({
+                ...pendingBooking.toObject(),
+                status: 'completed',
+                completedAt: new Date(),
+                departureTime: tripDetails.route.schedule.startFrom,
+                currentRefundPercentage,
+                hoursUntilDeparture
+            });
+            console.log(completedBooking);
+
 
             await completedBooking.save();
             await this.pendingBookingModel.findByIdAndDelete(pendingBooking._id);
@@ -167,11 +189,24 @@ export class StripeService {
             })
             .exec();
 
-        console.log(completedBooking);
-
         if (!completedBooking) {
             throw new NotFoundException('Completed booking not found');
         }
+
+        const route = completedBooking.routeId as Route;
+
+        const { hoursUntilDeparture, currentRefundPercentage } = this.pendingBookingService.calculateTimeAndRefund(
+          completedBooking.travelDate,
+          route.schedule.startFrom,
+          completedBooking.cancellationPolicy
+        );
+      
+        // Update the completed booking with the new values
+        completedBooking.hoursUntilDeparture = hoursUntilDeparture;
+        console.log(completedBooking.hoursUntilDeparture);
+        
+        completedBooking.currentRefundPercentage = currentRefundPercentage;
+
         return completedBooking;
     }
 

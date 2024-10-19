@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
+import { Route } from 'src/busOwner/interfaces/route.interface';
 
 @Schema({ timestamps: true })
 export class CompletedBooking extends Document {
@@ -16,7 +17,7 @@ export class CompletedBooking extends Document {
     busId: Types.ObjectId | string;
 
     @Prop({ type: Types.ObjectId, required: true, ref: 'Route' })
-    routeId: Types.ObjectId | string;
+    routeId: Types.ObjectId | string | Route | any;
 
     @Prop({ required: true })
     selectedSeatNumbers: any[]
@@ -24,7 +25,7 @@ export class CompletedBooking extends Document {
     @Prop({ required: true })
     selectedSeats: any[];
 
-    @Prop({ type: Types.ObjectId, required: true, ref: 'Counter' })
+    @Prop({ type: Types.ObjectId, required: true, ref: 'Counter' }) 
     boardingPoint: Types.ObjectId | string;
 
     @Prop({ type: Types.ObjectId, required: true, ref: 'Counter' })
@@ -37,13 +38,40 @@ export class CompletedBooking extends Document {
     totalTicketPrice: number;
 
     @Prop({ required: true })
+    baseFare: number;
+
+    @Prop({ required: true })
+    tax: number;
+
+    @Prop({ required: true })
+    convenienceFee: number;
+
+    @Prop({ required: true })
+    totalAmount: number;
+
+    @Prop({ required: true })
     email: string;
 
     @Prop({ required: true })
     phone: string;
-    
+
     @Prop({ required: true })
     travelDate: string;
+
+    @Prop({ type: Object, required: true })
+    cancellationPolicy: {
+        hours: number;
+        refundPercentage: number;
+    }[];
+
+    @Prop({ type: Date, required: true })
+    lastCancellationDate: Date;
+
+    @Prop({ type: Number })
+    hoursUntilDeparture?: number;
+
+    @Prop({ type: Number })
+    currentRefundPercentage?: number;
 
     @Prop({ default: 'completed' })
     status: string;

@@ -20,4 +20,15 @@ export class TripRepository {
         ])
         return { trips, total }
     }
-} 
+
+    // async findById(id: string): Promise<Trip | null> {
+    //     return this.tripModel.findById(id).exec();
+    // }
+
+    async findById(id: string): Promise<Trip | null> {
+        return this.tripModel.findById(id).populate({
+            path: 'route',
+            populate: { path: 'schedule', model: 'Schedule' }
+        }).exec();
+    }
+}

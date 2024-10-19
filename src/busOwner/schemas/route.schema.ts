@@ -7,7 +7,7 @@ export class Route extends Document {
     name: string;
 
     @Prop({ type: Types.ObjectId, ref: 'Schedule', required: true })
-    schedule: Types.ObjectId;
+    schedule: Types.ObjectId | any;
 
     @Prop({ type: Types.ObjectId, ref: 'Counter', required: true })
     startingPoint: Types.ObjectId;

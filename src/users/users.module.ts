@@ -40,6 +40,10 @@ import { CoTraveller, CoTravellerSchema } from "./schemas/co-traveller.schema";
 import { WalletTransaction, WalletTransactionSchema } from "./schemas/walletTransaction.schema";
 import { WalletController } from "./controllers/wallet.controller";
 import { WalletStripeService } from "./services/wallet-stripe.service";
+import { WalletTransactionService } from "./services/wallet-transaction.service";
+import { CancellationService } from "./services/cancellation.service";
+import { CancelledBookingRepository } from "./repositories/cancelled-booking.repository";
+import { CancelledBookingService } from "./services/cancelled-booking.service";
 
 @Module({
     imports: [
@@ -79,7 +83,11 @@ import { WalletStripeService } from "./services/wallet-stripe.service";
         UserProfileService,
         CoTravellerRepository,
         CoTravellerService,
-        WalletStripeService
+        WalletStripeService,
+        WalletTransactionService,
+        CancellationService,
+        CancelledBookingRepository,
+        CancelledBookingService
     ],
     exports: [UsersService, UsersRepository, PendingBookingService, UsersRepository, UserProfileService]
 })

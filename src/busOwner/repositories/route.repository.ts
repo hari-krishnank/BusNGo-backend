@@ -20,4 +20,8 @@ export class RouteRepository {
         ])
         return { routes, total }
     }
+
+    async findById(id: string): Promise<Route> {
+        return this.routeModel.findById(id).exec();
+    }
 }

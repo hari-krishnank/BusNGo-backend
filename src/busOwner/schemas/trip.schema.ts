@@ -17,7 +17,7 @@ export class Trip extends Document {
   route: Route;
 
   @Prop({ required: true })
-  ticketPrice: number;
+  ticketPrice: number; 
 
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Counter', required: true })
   startFrom: Counter;

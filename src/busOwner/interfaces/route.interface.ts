@@ -1,3 +1,5 @@
+import { Types } from "mongoose";
+
 export interface IRoute {
     name: string;
     startingPoint: string;
@@ -7,4 +9,17 @@ export interface IRoute {
     distance: number;
     time: string;
     status: string;
+}
+
+export interface Route {
+    _id: Types.ObjectId;
+    name: string;
+    schedule: {
+        startFrom: string;
+        end: string;
+        duration: string;
+    };
+    additionalStops: string[];
+    distance: number;
+    time: string;
 }

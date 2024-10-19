@@ -9,7 +9,17 @@ export class PendingBookingRepository {
         @InjectModel(PendingBooking.name) private pendingBookingModel: Model<PendingBooking>
     ) { }
 
-    async create(pendingBookingData: Partial<PendingBooking> & { userId: Types.ObjectId }): Promise<PendingBooking> {
+    async create(pendingBookingData: Partial<PendingBooking> & {
+        userId: Types.ObjectId;
+        baseFare: number;
+        tax: number;
+        convenienceFee: number;
+        totalAmount: number;
+        cancellationPolicy: { hours: number; refundPercentage: number }[];
+        lastCancellationDate: Date;
+        hoursUntilDeparture?: number;
+        currentRefundPercentage?: number;
+    }): Promise<PendingBooking> {
         const createdPendingBooking = new this.pendingBookingModel({
             ...pendingBookingData,
             tripId: this.toObjectId(pendingBookingData.tripId),
@@ -19,7 +29,7 @@ export class PendingBookingRepository {
             droppingPoint: this.toObjectId(pendingBookingData.droppingPoint),
         });
         return createdPendingBooking.save();
-    } 
+    }
 
     private toObjectId(id: string | Types.ObjectId | undefined): Types.ObjectId | undefined {
         if (id instanceof Types.ObjectId) {
@@ -32,7 +42,6 @@ export class PendingBookingRepository {
     }
 
     async findByBookingId(bookingId: string): Promise<PendingBooking | null> {
-        console.log(bookingId);
 
         return this.pendingBookingModel
             .findOne({ bookingId })
@@ -75,7 +84,6 @@ export class PendingBookingRepository {
             .populate({
                 path: 'droppingPoint',
                 select: ['_id', 'name', 'city', 'location']
-            })
-            .exec();
+            }).exec();
     }
 }

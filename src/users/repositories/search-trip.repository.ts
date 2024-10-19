@@ -29,6 +29,7 @@ export class SearchTripRepository {
         const { from, to, date } = searchTripDto;
         const searchDate = new Date(date);
         const dayOfWeek = searchDate.toLocaleString('en-us', { weekday: 'long' });
+        const currentTime = new Date();
         this.logger.log(`Search parameters: ${JSON.stringify({ from, to, dayOfWeek, status: 'Active' })}`);
 
         const matchingTrips = await this.tripModel.find({
@@ -68,9 +69,25 @@ export class SearchTripRepository {
                         model: 'Schedule'
                     }
                 ]
-            })
-            .exec();
-        const filteredTrips = matchingTrips.filter(trip => trip.startFrom && trip.endTo);
+            }).exec();
+
+        const filteredTrips = matchingTrips.filter(trip => {
+            if (!trip.startFrom || !trip.endTo) {
+                this.logger.log(`Trip ${trip._id} filtered out due to missing startFrom or endTo`);
+                return false;
+            }
+
+            const departureTime = new Date(searchDate);
+            const [hours, minutes] = trip.route.schedule.startFrom.split(':');
+            departureTime.setHours(parseInt(hours, 10), parseInt(minutes, 10), 0, 0);
+
+            if (departureTime <= currentTime) {
+                this.logger.log(`Trip ${trip._id} filtered out due to passed departure time: ${departureTime}`);
+                return false;
+            }
+
+            return departureTime > currentTime;
+        });
 
         this.logger.log(`Matching trips: ${filteredTrips.length}`);
 
@@ -87,7 +104,7 @@ export class SearchTripRepository {
         }).populate('bus').exec();
 
         this.logger.log(`Assigned buses: ${assignedBuses.length}`);
-        
+
         const bookedSeatsAggregation = await this.completedBookingModel.aggregate([
             {
                 $match: {
@@ -97,13 +114,15 @@ export class SearchTripRepository {
             },
             {
                 $group: {
-                    _id: '$tripId',
+                    _id: { tripId: '$tripId', busId: '$busId' },
                     bookedSeats: { $push: '$selectedSeats' }
                 }
             },
             {
                 $project: {
-                    _id: 1,
+                    _id: 0,
+                    tripId: '$_id.tripId',
+                    busId: '$_id.busId',
                     bookedSeats: {
                         $reduce: {
                             input: '$bookedSeats',
@@ -114,14 +133,30 @@ export class SearchTripRepository {
                 }
             }
         ]);
-        const bookedSeatsMap = new Map(bookedSeatsAggregation.map(item => [item._id.toString(), item.bookedSeats]));
 
-        const result = filteredTrips.map(trip => {
-            const assignedBus = assignedBuses.find(ab => ab.trip.toString() === trip._id.toString());
-            const tripBookedSeats = bookedSeatsMap.get(trip._id.toString()) || [];
-            console.log(tripBookedSeats);
-            return formatTripResult(trip, assignedBus?.bus, bookedSeatsMap.get(trip._id.toString()) || []);
+        const bookedSeatsMap = new Map();
+        bookedSeatsAggregation.forEach(item => {
+            const key = `${item.tripId.toString()}-${item.busId.toString()}`;
+            bookedSeatsMap.set(key, item.bookedSeats.flat());
         });
+
+        this.logger.log(bookedSeatsAggregation)
+
+        const result = [];
+        for (const trip of filteredTrips) {
+            const tripAssignedBuses = assignedBuses.filter(ab => ab.trip.toString() === trip._id.toString());
+
+            this.logger.log(`Trip ${trip._id}: ${tripAssignedBuses.length} assigned buses`);
+
+            for (const assignedBus of tripAssignedBuses) {
+                const key = `${trip._id.toString()}-${assignedBus.bus._id.toString()}`;
+                const busBookedSeats = bookedSeatsMap.get(key) || [];
+
+                this.logger.log(`Bus ${assignedBus.bus._id}: ${busBookedSeats.length}, ${busBookedSeats} booked seats`);
+
+                result.push(formatTripResult(trip, assignedBus.bus, busBookedSeats));
+            }
+        }
 
         this.logger.log(`Final result: ${result.length}`);
         return result;

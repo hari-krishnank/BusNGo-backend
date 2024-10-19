@@ -13,12 +13,11 @@ export class BookingsController {
     async createPendingBooking(@Request() req, @Body() pendingBookingData: CreatePendingBookingDto) {
         const userId = req.user.userId
         const userObjectId = new Types.ObjectId(userId);
-        console.log('user Id kittunnund', userId);
         return this.pendingBookingService.createPendingBooking(
             { ...pendingBookingData, userId: userObjectId },
             userId
         );
-    } 
+    }
 
     @Get('pending-booking/:id')
     async getPendingBooking(@Param('id') bookingId: string) {
