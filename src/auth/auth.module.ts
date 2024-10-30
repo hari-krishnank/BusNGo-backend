@@ -14,7 +14,7 @@ import { StaffAuthController } from './controllers/staffAuth.controller';
 import { StaffJwtStrategy } from './strategies/staffJwt.strategy';
 
 @Module({
-    imports: [
+    imports: [ 
         UsersModule,
         OwnerModule,
         ConfigModule.forRoot(),

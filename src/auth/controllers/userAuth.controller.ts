@@ -5,7 +5,7 @@ import { UserAuthService } from '../services/userAuth.service';
 export class UserAuthController {
     constructor(private userAuthService: UserAuthService) { }
 
-    @Post('login') 
+    @Post('login')
     async login(@Body() loginDto: { email: string; password: string }) {
         try {
             const user = await this.userAuthService.validateUser(loginDto.email, loginDto.password);
@@ -27,9 +27,14 @@ export class UserAuthController {
             throw new InternalServerErrorException('An error occurred during login');
         }
     }
- 
+
     @Post('google-login')
     async googleLogin(@Body('credential') credential: string) {
         return this.userAuthService.googleLogin(credential);
+    }
+
+    @Post('refresh')
+    async refreshToken(@Body() body: { refreshToken: string }) {
+        return this.userAuthService.refreshTokens(body.refreshToken);
     }
 }

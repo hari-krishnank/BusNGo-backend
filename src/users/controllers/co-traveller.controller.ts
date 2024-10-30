@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards, Request, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards, Request, Req, Query } from '@nestjs/common';
 import { CoTravellerService } from '../services/co-traveller.service';
 import { CreateCoTravellerDto } from '../dto/co-traveller.dto';
 import { CoTraveller } from '../schemas/co-traveller.schema';
@@ -10,20 +10,25 @@ export class CoTravellerController {
     @UseGuards(JwtAuthGuard)
     @Post()
     async create(@Body() createCoTravellerDto: CreateCoTravellerDto, @Request() req) {
-        console.log('Request user:', req.user); 
         const user = req.user as any;
         if (!user || !user.userId) {
             throw new Error('User not authenticated or userId not found');
         }
         createCoTravellerDto.userId = user.userId;
-        console.log('CreateCoTravellerDto:', createCoTravellerDto); 
         return this.coTravellerService.create(createCoTravellerDto);
     }
 
+    // @UseGuards(JwtAuthGuard)
+    // @Get()
+    // async findAll(@Req() req): Promise<CoTraveller[]> {
+    //     return this.coTravellerService.findAll();
+    // }
+
     @UseGuards(JwtAuthGuard)
     @Get()
-    async findAll(@Req() req): Promise<CoTraveller[]> {
-        return this.coTravellerService.findAll();
+    async findAll(@Req() req, @Query('page') page: number = 1, @Query('limit') limit: number = 10): Promise<{ coTravellers: CoTraveller[], total: number }> {
+        const user = req.user as any;
+        return this.coTravellerService.findAllPaginated(user.userId, page, limit);
     }
 
     @Get(':id')

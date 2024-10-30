@@ -11,10 +11,11 @@ export class CompletedBookingService {
         private pendingBookingService: PendingBookingService
     ) { }
 
-    async getAllbookings(userId: string): Promise<{ bookings: CompletedBooking[], count: number }> {
-        const { bookings, count } = await this.completedBookingRepository.findAll(new Types.ObjectId(userId));
+    async getAllbookings(userId: string, page: number, limit: number, sort: string): Promise<{ bookings: CompletedBooking[], count: number, totalPages: number }> {
+        const { bookings, count } = await this.completedBookingRepository.findAll(new Types.ObjectId(userId), page, limit, sort);
         const updatedBookings = bookings.map(booking => this.addDynamicFields(booking));
-        return { bookings: updatedBookings, count };
+        const totalPages = Math.ceil(count / limit);
+        return { bookings: updatedBookings, count, totalPages };
     }
 
     async getBookingByBookingId(bookingId: string): Promise<CompletedBooking> {

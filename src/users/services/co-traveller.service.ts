@@ -10,14 +10,18 @@ export class CoTravellerService {
         return this.coTravellerRepository.create(createCoTravellerDto);
     }
 
-    async findAll(): Promise<CoTraveller[]> {
-        return this.coTravellerRepository.findAll();
+    // async findAll(): Promise<CoTraveller[]> {
+    //     return this.coTravellerRepository.findAll();
+    // }
+
+    async findAllPaginated(userId: string, page: number, limit: number): Promise<{ coTravellers: CoTraveller[], total: number }> {
+        return this.coTravellerRepository.findAllPaginated(userId, page, limit);
     }
 
     async findByUserId(userId: string): Promise<CoTraveller[]> {
         return this.coTravellerRepository.findByUserId(userId);
     }
- 
+
     async findById(id: string): Promise<CoTraveller> {
         return this.coTravellerRepository.findById(id);
     }

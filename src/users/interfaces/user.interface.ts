@@ -8,6 +8,7 @@ export interface IUser {
     dob?: Date;
     gender?: string;
     walletBalance?: number;
+    refreshToken?:any
     is_verified: boolean;
     is_blocked: boolean;
 }

@@ -20,7 +20,7 @@ export class UserAuthService implements IUserAuthService {
     async validateUser(email: string, password: string): Promise<any> {
         const user = await this.userService.findByEmail(email);
         if (!user) {
-            this.logger.warn(`User not found for email: ${email}`); 
+            this.logger.warn(`User not found for email: ${email}`);
             return null;
         }
 
@@ -43,6 +43,57 @@ export class UserAuthService implements IUserAuthService {
         };
     }
 
+    async generateTokens(user: any) {
+        const payload = {
+            email: user.email,
+            sub: user._id.toString(),
+            role: 'user',
+            userId: user._id.toString()
+        };
+
+        const [accessToken, refreshToken] = await Promise.all([
+            this.jwtService.sign(payload, {
+                secret: this.configService.get<string>('JWT_SECRET'),
+                expiresIn: '5m'
+            }),
+            this.jwtService.sign(payload, {
+                secret: this.configService.get<string>('REFRESH_TOKEN_SECRET'),
+                expiresIn: '7d'
+            })
+        ]);
+
+        await this.userRepository.updateRefreshToken(user._id.toString(), refreshToken, new Date(Date.now() + 7 * 24 * 60 * 60 * 1000));
+
+        return {
+            access_token: accessToken,
+            refresh_token: refreshToken,
+            user: {
+                userId: user._id,
+                email: user.email,
+                username: user.firstName || user.username,
+                phone: user.phone,
+                profileImage: user.profileImage
+            }
+        };
+    }
+
+    async refreshTokens(refreshToken: string) {
+        try {
+            const payload = await this.jwtService.verify(refreshToken, {
+                secret: this.configService.get<string>('REFRESH_TOKEN_SECRET')
+            });
+
+            const user = await this.userRepository.findById(payload.userId);
+            if (!user || user.refreshToken !== refreshToken) {
+                throw new UnauthorizedException('Invalid refresh token');
+            }
+
+            return this.generateTokens(user);
+        } catch (error) {
+            throw new UnauthorizedException('Invalid refresh token');
+        }
+    }
+
     async login(user: any) {
         console.log('ithaan login cheyyunna user', user);
 
@@ -57,16 +108,7 @@ export class UserAuthService implements IUserAuthService {
             userId: user._id.toString()
         };
         console.log('Payload:', payload);
-        return {
-            access_token: this.jwtService.sign(payload, { secret: this.configService.get<string>('JWT_SECRET') }),
-            user: {
-                userId: user._id,
-                email: user.email,
-                username: user.firstName || user.username,
-                phone: user.phone,
-                profileImage: user.profileImage
-            }
-        };
+        return this.generateTokens(user);
     }
 
     async googleLogin(credential: string) {

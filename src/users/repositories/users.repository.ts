@@ -69,6 +69,17 @@ export class UsersRepository {
     ).exec();
   }
 
+  async updateRefreshToken(userId: string, refreshToken: string, expires: Date) {
+    return this.userModel.findByIdAndUpdate(
+      userId,
+      {
+        refreshToken,
+        refreshTokenExpires: expires
+      },
+      { new: true }
+    ).exec();
+  }
+
   async updateResetToken(userId: string, resetToken: string, resetTokenExpiration: Date): Promise<void> {
     await this.userModel.findByIdAndUpdate(userId, {
       resetToken,

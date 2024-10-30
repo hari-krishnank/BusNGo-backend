@@ -12,6 +12,7 @@ export class UserProfileController {
     @Get()
     async getUserProfile(@Request() req) {
         const userId = req.user.userId;
+        
         return this.userProfileService.getUserProfile(userId);
     }
 

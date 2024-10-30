@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post, Request, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Post, Query, Request, UseGuards } from '@nestjs/common';
 import { CompletedBookingService } from '../services/completed-booking.service';
 import { JwtAuthGuard } from 'src/guards/jwtAuthGuard/jwt.guard';
 import { CheckUserBlocked } from 'src/utils/decorators/checkBlockStatus/checkUser.decorator';
@@ -17,10 +17,13 @@ export class CompletedBookingController {
     @Get()
     @CheckUserBlocked()
     async getAllCompletedBookings(
-        @Request() req
+        @Request() req,
+        @Query('page') page: number = 1,
+        @Query('limit') limit: number = 10,
+        @Query('sort') sort: string = '-completedAt'
     ) {
         const userId = req.user.userId;
-        return this.completedBookingService.getAllbookings(userId);
+        return this.completedBookingService.getAllbookings(userId, page, limit, sort);
     }
 
     @Get('booking/:bookingId')
@@ -39,9 +42,12 @@ export class CompletedBookingController {
     @Get('cancelledBookings')
     @CheckUserBlocked()
     async getAllCancelledBookings(
-        @Request() req
+        @Request() req,
+        @Query('page') page: number = 1,
+        @Query('limit') limit: number = 5,
+        @Query('sort') sort: string = '-cancelledAt'
     ) {
         const userId = req.user.userId;
-        return this.cancelledBookingService.getAllbookings(userId);
+        return this.cancelledBookingService.getAllbookings(userId, page, limit, sort);
     }
 }

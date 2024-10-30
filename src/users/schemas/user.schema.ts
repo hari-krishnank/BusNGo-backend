@@ -47,6 +47,12 @@ export class User extends Document implements IUser {
 
     @Prop({ default: 0, required: false })
     walletBalance: number;
+
+    @Prop()
+    refreshToken: string;
+
+    @Prop()
+    refreshTokenExpires: Date;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

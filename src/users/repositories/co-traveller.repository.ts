@@ -24,6 +24,19 @@ export class CoTravellerRepository implements ICoTravellerRepository {
         return this.coTravellerModel.find().exec();
     }
 
+    async findAllPaginated(userId: string, page: number, limit: number): Promise<{ coTravellers: CoTraveller[], total: number }> {
+        const skip = (page - 1) * limit;
+        const [coTravellers, total] = await Promise.all([
+            this.coTravellerModel.find({ userId: new Types.ObjectId(userId) })
+                .sort({ createdAt: -1 })
+                .skip(skip)
+                .limit(limit)
+                .exec(),
+            this.coTravellerModel.countDocuments({ userId: new Types.ObjectId(userId) })
+        ]);
+        return { coTravellers, total };
+    }
+
     async findByUserId(userId: string): Promise<CoTraveller[]> {
         return this.coTravellerModel.find({ userId }).exec();
     }

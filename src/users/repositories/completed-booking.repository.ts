@@ -7,9 +7,10 @@ import { Model, Types } from "mongoose";
 export class CompletedBookingRepository {
     constructor(@InjectModel(CompletedBooking.name) private completedBookingModel: Model<CompletedBooking>) { }
 
-    async findAll(userId: Types.ObjectId): Promise<{ bookings: CompletedBooking[], count: number }> {
+    async findAll(userId: Types.ObjectId, page: number, limit: number, sort: string): Promise<{ bookings: CompletedBooking[], count: number }> {
+        const skip = (page - 1) * limit;
         const [bookings, count] = await Promise.all([
-            this.completedBookingModel.find({ userId, status:'completed' })
+            this.completedBookingModel.find({ userId, status: 'completed' })
                 .populate({
                     path: 'tripId',
                     select: ['_id', 'title', 'fleetType', 'ticketPrice'],
@@ -49,7 +50,11 @@ export class CompletedBookingRepository {
                 .populate({
                     path: 'droppingPoint',
                     select: ['_id', 'name', 'city', 'location']
-                }).exec(),
+                })
+                .sort(sort)
+                .skip(skip)
+                .limit(limit)
+                .exec(),
             this.completedBookingModel.countDocuments({
                 userId,
                 status: 'completed'

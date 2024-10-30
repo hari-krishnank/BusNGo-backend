@@ -9,8 +9,8 @@ export class CancelledBookingService {
         private cancelledBookingRepository: CancelledBookingRepository,
     ) { }
 
-    async getAllbookings(userId: string): Promise<{ bookings: CompletedBooking[], count: number }> {
-        const { bookings, count } = await this.cancelledBookingRepository.findAll(new Types.ObjectId(userId));
+    async getAllbookings(userId: string, page: number, limit: number, sort: string): Promise<{ bookings: CompletedBooking[], count: number }> {
+        const { bookings, count } = await this.cancelledBookingRepository.findAll(new Types.ObjectId(userId), page, limit, sort);
         return { bookings, count };
     }
 }

@@ -8,6 +8,7 @@ export default () => ({
     },
     jwt: {
         secret: process.env.JWT_SECRET,
+        userRefreshTokenSecret: process.env.REFRESH_TOKEN_SECRET,
         adminSecret: process.env.JWT_ADMIN_SECRET,
         ownerSecret: process.env.JWT_OWNER_SECRET,
         staffSecret: process.env.JWT_STAFF_SECRET,

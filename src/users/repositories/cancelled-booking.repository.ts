@@ -1,15 +1,23 @@
 import { Injectable } from "@nestjs/common";
-import { Model, Types } from "mongoose";
+import { Model, SortOrder, Types } from "mongoose";
 import { CompletedBooking } from "../schemas/completeBooking.schema";
 import { InjectModel } from "@nestjs/mongoose";
 
 @Injectable()
 export class CancelledBookingRepository {
     constructor(@InjectModel(CompletedBooking.name) private completedBookingModel: Model<CompletedBooking>) { }
+    
+    async findAll(userId: Types.ObjectId, page: number, limit: number, sort: string): Promise<{ bookings: CompletedBooking[], count: number }> {
+        const skip = (page - 1) * limit;
+        const sortField = sort.startsWith('-') ? sort.slice(1) : sort;
+        const sortDirection: SortOrder = sort.startsWith('-') ? -1 : 1;
+        const sortOption = { [sortField]: sortDirection };
 
-    async findAll(userId: Types.ObjectId): Promise<{ bookings: CompletedBooking[], count: number }> {
         const [bookings, count] = await Promise.all([
             this.completedBookingModel.find({ userId, status: 'cancelled' })
+                .sort(sortOption)
+                .skip(skip)
+                .limit(limit)
                 .populate({
                     path: 'tripId',
                     select: ['_id', 'title', 'fleetType', 'ticketPrice'],
