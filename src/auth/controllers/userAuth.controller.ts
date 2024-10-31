@@ -35,6 +35,7 @@ export class UserAuthController {
 
     @Post('refresh')
     async refreshToken(@Body() body: { refreshToken: string }) {
+        console.log('body',body);
         return this.userAuthService.refreshTokens(body.refreshToken);
     }
 }
